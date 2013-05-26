@@ -1,0 +1,89 @@
+package net.davidtanzer.babysteps;
+
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+
+import javax.swing.JFrame;
+import javax.swing.JTextPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+
+import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
+
+public class TimerView {
+	private static JFrame timerFrame;
+	private static JTextPane timerPane;
+	private final TimerPresentationModel presentationModel;
+
+	public TimerView(final TimerPresentationModel presentationModel) {
+		this.presentationModel = presentationModel;
+		
+		timerFrame = new JFrame("Babysteps Timer");
+		timerFrame.setUndecorated(true);
+
+		timerFrame.setSize(250, 120);
+		timerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		timerPane = new JTextPane();
+		timerPane.setContentType("text/html");
+		timerPane.setText(presentationModel.getTimerHtml());
+		timerPane.setEditable(false);
+		timerPane.addMouseMotionListener(new MouseMotionListener() {
+			private int lastX;
+			private int lastY;
+
+			@Override
+			public void mouseMoved(final MouseEvent e) {
+				lastX = e.getXOnScreen();
+				lastY = e.getYOnScreen();
+			}
+			
+			@Override
+			public void mouseDragged(final MouseEvent e) {
+				int x = e.getXOnScreen();
+				int y = e.getYOnScreen();
+				
+				timerFrame.setLocation(timerFrame.getLocation().x + (x-lastX), timerFrame.getLocation().y + (y-lastY));
+				
+				lastX = x;
+				lastY = y;
+			}
+		});
+		timerPane.addHyperlinkListener(new HyperlinkListener() {
+			@Override
+			public void hyperlinkUpdate(final HyperlinkEvent e) {
+				if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+					if("command://start".equals(e.getDescription())) {
+						timerFrame.setAlwaysOnTop(true);
+						timerPane.setText(presentationModel.getTimerHtml());
+						timerFrame.repaint();
+						new BabystepsTimer.TimerThread().start();
+					} else if("command://stop".equals(e.getDescription())) {
+						BabystepsTimer.timerRunning = false;
+						timerFrame.setAlwaysOnTop(false);
+						
+						presentationModel.setRemainingSeconds(BabystepsTimer.SECONDS_IN_CYCLE);
+						presentationModel.setRunning(false);
+						presentationModel.setTimerState(TimerState.NORMAL);
+						
+						timerPane.setText(presentationModel.getTimerHtml());
+						timerFrame.repaint();
+					} else  if("command://reset".equals(e.getDescription())) {
+						BabystepsTimer.currentCycleStartTime = System.currentTimeMillis();
+						presentationModel.setTimerState(TimerState.FINISHED_IN_TIME);
+					} else  if("command://quit".equals(e.getDescription())) {
+						System.exit(0);
+					}
+				}
+			}
+		});
+		timerFrame.getContentPane().add(timerPane);
+
+		timerFrame.setVisible(true);
+	}
+
+	public void updatedTimerDataAvailable() {
+		timerPane.setText(presentationModel.getTimerHtml());
+		timerFrame.repaint();
+	}
+}
