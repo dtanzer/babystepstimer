@@ -2,27 +2,33 @@ package net.davidtanzer.babysteps;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class TimerTest {
-	private TimerPresentationModel presentationModel;
-	private TimerDataListener dataListener;
-	private Timer timer;
-	
-	@Before
-	public void setup() {
-		presentationModel = new TimerPresentationModel();
-		dataListener = mock(TimerDataListener.class);
-		
-		timer = new Timer(presentationModel, dataListener);
-	}
 	@Test
 	public void shouldInformListenerWhenNewTimerDataIsAvailable() throws InterruptedException {
-		timer.start();
+		TimerPresentationModel presentationModel = new TimerPresentationModel();
+		TimerDataListener dataListener = mock(TimerDataListener.class);
+		TimerSoundsPlayer soundsPlayer = mock(TimerSoundsPlayer.class);
 		
-		Thread.sleep(1500);
+		Timer timer = new Timer(presentationModel, dataListener, soundsPlayer);
+		timer.runTimerStep();
 		
 		verify(dataListener, atLeastOnce()).updatedTimerDataAvailable();
+	}
+	
+	@Test
+	public void shouldPlayASoundAtTheTenSecondMark() throws InterruptedException {
+		TimerPresentationModel presentationModel = mock(TimerPresentationModel.class);
+		when(presentationModel.getRemainingTimeCaption()).thenReturn("00:11").thenReturn("00:10");
+
+		TimerDataListener dataListener = mock(TimerDataListener.class);
+		TimerSoundsPlayer soundsPlayer = mock(TimerSoundsPlayer.class);
+		
+		Timer timer = new Timer(presentationModel, dataListener, soundsPlayer);
+		timer.runTimerStep();
+		timer.runTimerStep();
+		
+		verify(soundsPlayer).playTenSecondsWarningSound();
 	}
 }

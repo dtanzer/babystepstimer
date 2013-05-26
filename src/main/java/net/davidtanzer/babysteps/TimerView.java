@@ -59,7 +59,7 @@ public class TimerView implements TimerDataListener {
 						timerFrame.setAlwaysOnTop(true);
 						timerPane.setText(presentationModel.getTimerHtml());
 						timerFrame.repaint();
-						timer = new Timer(presentationModel, BabystepsTimer.timerView);
+						timer = new Timer(presentationModel, BabystepsTimer.timerView, new TimerSoundsPlayer());
 						timer.start();
 					} else if("command://stop".equals(e.getDescription())) {
 						timer.stopTimer();

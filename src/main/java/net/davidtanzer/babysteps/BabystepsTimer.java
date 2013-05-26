@@ -13,9 +13,6 @@
 
 package net.davidtanzer.babysteps;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 
 
 public class BabystepsTimer {
@@ -30,22 +27,5 @@ public class BabystepsTimer {
 		presentationModel.setRemainingSeconds(SECONDS_IN_CYCLE);
 		
 		timerView = new TimerView(presentationModel);
-	}
-
-	public static synchronized void playSound(final String url) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Clip clip = AudioSystem.getClip();
-					AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-							BabystepsTimer.class.getResourceAsStream("/"+url));
-					clip.open(inputStream);
-					clip.start();
-				} catch (Exception e) {
-					System.err.println(e.getMessage());
-				}
-			}
-		}).start();
 	}
 }
