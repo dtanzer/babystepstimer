@@ -17,18 +17,13 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
 
 public class BabystepsTimer {
 
 	static final long SECONDS_IN_CYCLE = 12;
 
-	static boolean timerRunning;
-	static long currentCycleStartTime;
-	private static String lastRemainingTime;
-
-	private static TimerPresentationModel presentationModel;
-	private static TimerView timerView;
+	static TimerPresentationModel presentationModel;
+	static TimerView timerView;
 
 	public static void main(final String[] args) throws InterruptedException {
 		presentationModel = new TimerPresentationModel();
@@ -52,49 +47,5 @@ public class BabystepsTimer {
 				}
 			}
 		}).start();
-	}
-
-	static final class TimerThread extends Thread {
-		@Override
-		public void run() {
-			timerRunning = true;
-			presentationModel.setRunning(true);
-			currentCycleStartTime = System.currentTimeMillis();
-			
-			while(timerRunning) {
-				long elapsedTime = System.currentTimeMillis() - currentCycleStartTime;
-				
-				if(elapsedTime >= SECONDS_IN_CYCLE*1000+980) {
-					currentCycleStartTime = System.currentTimeMillis();
-					elapsedTime = System.currentTimeMillis() - currentCycleStartTime;
-				}
-				if(elapsedTime >= 5000 && elapsedTime < 6000) {
-					presentationModel.setTimerState(TimerState.NORMAL);
-				}
-				
-				long elapsedSeconds = elapsedTime/1000;
-				long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
-
-				presentationModel.setRemainingSeconds(remainingSeconds);
-				
-				String remainingTime = presentationModel.getRemainingTimeCaption();
-				if(!remainingTime.equals(lastRemainingTime)) {
-					if(remainingTime.equals("00:10")) {
-						playSound("2166__suburban-grilla__bowl-struck.wav");
-					} else if(remainingTime.equals("00:00")) {
-						playSound("32304__acclivity__shipsbell.wav");
-						presentationModel.setTimerState(TimerState.ALL_TIME_ELAPSED);
-					}
-					
-					timerView.updatedTimerDataAvailable();
-					lastRemainingTime = remainingTime;
-				}
-				try {
-					sleep(10);
-				} catch (InterruptedException e) {
-					//We don't really care about this one...
-				}
-			}
-		}
 	}
 }

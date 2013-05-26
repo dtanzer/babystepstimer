@@ -10,7 +10,7 @@ import javax.swing.event.HyperlinkListener;
 
 import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
 
-public class TimerView {
+public class TimerView implements TimerDataListener {
 	private static JFrame timerFrame;
 	private static JTextPane timerPane;
 	private final TimerPresentationModel presentationModel;
@@ -50,6 +50,8 @@ public class TimerView {
 			}
 		});
 		timerPane.addHyperlinkListener(new HyperlinkListener() {
+			private Timer timer;
+
 			@Override
 			public void hyperlinkUpdate(final HyperlinkEvent e) {
 				if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -57,9 +59,10 @@ public class TimerView {
 						timerFrame.setAlwaysOnTop(true);
 						timerPane.setText(presentationModel.getTimerHtml());
 						timerFrame.repaint();
-						new BabystepsTimer.TimerThread().start();
+						timer = new Timer(presentationModel, BabystepsTimer.timerView);
+						timer.start();
 					} else if("command://stop".equals(e.getDescription())) {
-						BabystepsTimer.timerRunning = false;
+						timer.stopTimer();
 						timerFrame.setAlwaysOnTop(false);
 						
 						presentationModel.setRemainingSeconds(BabystepsTimer.SECONDS_IN_CYCLE);
@@ -69,8 +72,7 @@ public class TimerView {
 						timerPane.setText(presentationModel.getTimerHtml());
 						timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
-						BabystepsTimer.currentCycleStartTime = System.currentTimeMillis();
-						presentationModel.setTimerState(TimerState.FINISHED_IN_TIME);
+						timer.resetTimer();
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
 					}
@@ -82,6 +84,7 @@ public class TimerView {
 		timerFrame.setVisible(true);
 	}
 
+	@Override
 	public void updatedTimerDataAvailable() {
 		timerPane.setText(presentationModel.getTimerHtml());
 		timerFrame.repaint();
