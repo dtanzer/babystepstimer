@@ -2,12 +2,11 @@ package net.davidtanzer.babysteps;
 
 import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
 
-final class Timer extends Thread {
+final class Timer {
 	private static final long FINAL_WARNING_TIME = 0L;
 	private static final long FIRST_WARNING_TIME = 10L;
 	private static final long RESET_BACKGROUND_TIME = 5L;
 	private static final int MILLISECONDS_IN_SECOND = 1000;
-	private boolean timerRunning;
 	private long currentCycleStartTime;
 	private long lastRemainingSeconds;
 	private final TimerPresentationModel presentationModel;
@@ -15,6 +14,7 @@ final class Timer extends Thread {
 	private final TimerSoundsPlayer soundsPlayer;
 	private WallClock wallClock = new WallClock();
 	private final long secondsInCycle;
+	private TimerThread timerThread;
 
 	public Timer(final long secondsInCycle, final TimerPresentationModel presentationModel, final TimerDataListener dataListener, final TimerSoundsPlayer soundsPlayer) {
 		this.presentationModel = presentationModel;
@@ -23,17 +23,14 @@ final class Timer extends Thread {
 		this.secondsInCycle = secondsInCycle;
 	}
 	
-	@Override
-	public void run() {
-		timerRunning = true;
+	public void start() {
 		presentationModel.setRunning(true);
 		currentCycleStartTime = wallClock.currentTime();
-		
-		while(timerRunning) {
-			runTimerStep();
-		}
-	}
 
+		timerThread = new TimerThread(this);
+		timerThread.start();
+	}
+	
 	void runTimerStep() {
 		long elapsedTime = wallClock.currentTime() - currentCycleStartTime;
 		
@@ -78,14 +75,14 @@ final class Timer extends Thread {
 
 	private void sleep() {
 		try {
-			sleep(10);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			//We don't really care about this one...
 		}
 	}
 	
 	public void stopTimer() {
-		timerRunning = false;
+		timerThread.stopTimer();
 	}
 	
 	public void resetTimer() {
