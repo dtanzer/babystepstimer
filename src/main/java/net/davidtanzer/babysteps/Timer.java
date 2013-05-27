@@ -3,6 +3,10 @@ package net.davidtanzer.babysteps;
 import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
 
 final class Timer extends Thread {
+	private static final long FINAL_WARNING_TIME = 0L;
+	private static final long FIRST_WARNING_TIME = 10L;
+	private static final long RESET_BACKGROUND_TIME = 5L;
+	private static final int MILLISECONDS_IN_SECOND = 1000;
 	private boolean timerRunning;
 	private long currentCycleStartTime;
 	private long lastRemainingSeconds;
@@ -33,30 +37,46 @@ final class Timer extends Thread {
 	void runTimerStep() {
 		long elapsedTime = wallClock.currentTime() - currentCycleStartTime;
 		
-		if(elapsedTime >= secondsInCycle*1000+980) {
+		if(isAllTimeElapsed(elapsedTime)) {
 			currentCycleStartTime = wallClock.currentTime();
-			elapsedTime = wallClock.currentTime() - currentCycleStartTime;
+			elapsedTime = 0L;
 		}
-		if(elapsedTime >= 5000 && elapsedTime < 6000) {
-			presentationModel.setTimerState(TimerState.NORMAL);
-		}
-		
-		long elapsedSeconds = elapsedTime/1000;
+	
+		long elapsedSeconds = elapsedTime/MILLISECONDS_IN_SECOND;
 		long remainingSeconds = secondsInCycle - elapsedSeconds;
 
-		presentationModel.setRemainingSeconds(remainingSeconds);
-		
 		if(remainingSeconds != lastRemainingSeconds) {
-			if(remainingSeconds == 10L) {
-				soundsPlayer.playTenSecondsWarningSound();
-			} else if(remainingSeconds == 0L) {
-				soundsPlayer.playTimeElapsedInfoSound();
-				presentationModel.setTimerState(TimerState.ALL_TIME_ELAPSED);
-			}
-			
-			dataListener.updatedTimerDataAvailable();
+			onNewTimeAvailable(elapsedSeconds, remainingSeconds);
 			lastRemainingSeconds = remainingSeconds;
 		}
+		sleep();
+	}
+
+	private void onNewTimeAvailable(final long elapsedSeconds, final long remainingSeconds) {
+		presentationModel.setRemainingSeconds(remainingSeconds);
+		
+		if(elapsedSeconds == RESET_BACKGROUND_TIME) {
+			presentationModel.setTimerState(TimerState.NORMAL);
+		}
+		if(remainingSeconds == FIRST_WARNING_TIME) {
+			soundsPlayer.playTenSecondsWarningSound();
+		} else if(remainingSeconds == FINAL_WARNING_TIME) {
+			soundsPlayer.playTimeElapsedInfoSound();
+			presentationModel.setTimerState(TimerState.ALL_TIME_ELAPSED);
+		}
+		
+		dataListener.updatedTimerDataAvailable();
+	}
+
+	private boolean isAllTimeElapsed(final long elapsedTime) {
+		long almostOneSecond = MILLISECONDS_IN_SECOND-20L;
+		long cycleInMilliseconds = secondsInCycle*MILLISECONDS_IN_SECOND;
+		
+		//The time "00:00" should show for just about one second, but not longer or we risk to show "00:-01"!
+		return elapsedTime >= cycleInMilliseconds+almostOneSecond;
+	}
+
+	private void sleep() {
 		try {
 			sleep(10);
 		} catch (InterruptedException e) {
