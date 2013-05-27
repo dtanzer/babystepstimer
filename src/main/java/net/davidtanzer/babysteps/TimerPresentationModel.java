@@ -43,7 +43,7 @@ public class TimerPresentationModel {
 		return createTimerHtml(getRemainingTimeCaption());
 	}
 	
-	String getRemainingTimeCaption() {
+	private String getRemainingTimeCaption() {
 		long remainingMinutes = remainingSeconds/60;
 		return twoDigitsFormat.format(remainingMinutes)+":"+twoDigitsFormat.format(remainingSeconds-remainingMinutes*60);
 	}

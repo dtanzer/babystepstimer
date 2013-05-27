@@ -17,7 +17,7 @@ package net.davidtanzer.babysteps;
 
 public class BabystepsTimer {
 
-	static final long SECONDS_IN_CYCLE = 12;
+	private static final long SECONDS_IN_CYCLE = 12;
 
 	static TimerPresentationModel presentationModel;
 	static TimerView timerView;
@@ -26,6 +26,6 @@ public class BabystepsTimer {
 		presentationModel = new TimerPresentationModel();
 		presentationModel.setRemainingSeconds(SECONDS_IN_CYCLE);
 		
-		timerView = new TimerView(presentationModel);
+		timerView = new TimerView(presentationModel, SECONDS_IN_CYCLE);
 	}
 }

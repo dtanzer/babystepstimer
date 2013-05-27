@@ -15,7 +15,7 @@ public class TimerView implements TimerDataListener {
 	private static JTextPane timerPane;
 	private final TimerPresentationModel presentationModel;
 
-	public TimerView(final TimerPresentationModel presentationModel) {
+	public TimerView(final TimerPresentationModel presentationModel, final long secondsInCycle) {
 		this.presentationModel = presentationModel;
 		
 		timerFrame = new JFrame("Babysteps Timer");
@@ -59,13 +59,13 @@ public class TimerView implements TimerDataListener {
 						timerFrame.setAlwaysOnTop(true);
 						timerPane.setText(presentationModel.getTimerHtml());
 						timerFrame.repaint();
-						timer = new Timer(presentationModel, BabystepsTimer.timerView, new TimerSoundsPlayer());
+						timer = new Timer(secondsInCycle, presentationModel, BabystepsTimer.timerView, new TimerSoundsPlayer());
 						timer.start();
 					} else if("command://stop".equals(e.getDescription())) {
 						timer.stopTimer();
 						timerFrame.setAlwaysOnTop(false);
 						
-						presentationModel.setRemainingSeconds(BabystepsTimer.SECONDS_IN_CYCLE);
+						presentationModel.setRemainingSeconds(secondsInCycle);
 						presentationModel.setRunning(false);
 						presentationModel.setTimerState(TimerState.NORMAL);
 						

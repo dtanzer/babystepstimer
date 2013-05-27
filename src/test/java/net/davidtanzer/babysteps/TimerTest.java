@@ -11,7 +11,7 @@ public class TimerTest {
 		TimerDataListener dataListener = mock(TimerDataListener.class);
 		TimerSoundsPlayer soundsPlayer = mock(TimerSoundsPlayer.class);
 		
-		Timer timer = new Timer(presentationModel, dataListener, soundsPlayer);
+		Timer timer = new Timer(12L, presentationModel, dataListener, soundsPlayer);
 		timer.runTimerStep();
 		
 		verify(dataListener, atLeastOnce()).updatedTimerDataAvailable();
@@ -20,12 +20,19 @@ public class TimerTest {
 	@Test
 	public void shouldPlayASoundAtTheTenSecondMark() throws InterruptedException {
 		TimerPresentationModel presentationModel = mock(TimerPresentationModel.class);
-		when(presentationModel.getRemainingTimeCaption()).thenReturn("00:11").thenReturn("00:10");
-
 		TimerDataListener dataListener = mock(TimerDataListener.class);
 		TimerSoundsPlayer soundsPlayer = mock(TimerSoundsPlayer.class);
+		WallClock wallClock = mock(WallClock.class);
 		
-		Timer timer = new Timer(presentationModel, dataListener, soundsPlayer);
+		//Sound should be played when ten seconds are remaining, that is at two seconds.
+		when(wallClock.currentTime()).thenReturn(0L).thenReturn(1990L).thenReturn(2000L).thenReturn(2100L);
+		
+		Timer timer = new Timer(12L, presentationModel, dataListener, soundsPlayer);
+		timer.setWallClock(wallClock);
+		
+		//Make sure the timer uses the first time value as starting time.
+		timer.resetTimer();
+		timer.runTimerStep();
 		timer.runTimerStep();
 		timer.runTimerStep();
 		
