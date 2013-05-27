@@ -9,8 +9,11 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
+import net.davidtanzer.babysteps.timerevents.FinalWarningSoundPlayer;
+import net.davidtanzer.babysteps.timerevents.FirstWarningSoundPlayer;
+import net.davidtanzer.babysteps.timerevents.PresentationModelUpdater;
 
-public class TimerView implements TimerDataListener {
+public class TimerView implements TimerEventListener {
 	private static JFrame timerFrame;
 	private static JTextPane timerPane;
 	private final TimerPresentationModel presentationModel;
@@ -59,7 +62,14 @@ public class TimerView implements TimerDataListener {
 						timerFrame.setAlwaysOnTop(true);
 						timerPane.setText(presentationModel.getTimerHtml());
 						timerFrame.repaint();
-						timer = new Timer(secondsInCycle, presentationModel, BabystepsTimer.timerView, new TimerSoundsPlayer());
+						
+						TimerSoundsPlayer soundsPlayer = new TimerSoundsPlayer();
+						timer = new Timer(secondsInCycle, presentationModel);
+						timer.addTimerEventListener(new PresentationModelUpdater(presentationModel));
+						timer.addTimerEventListener(new FirstWarningSoundPlayer(soundsPlayer));
+						timer.addTimerEventListener(new FinalWarningSoundPlayer(soundsPlayer));
+						timer.addTimerEventListener(TimerView.this);
+						
 						timer.start();
 					} else if("command://stop".equals(e.getDescription())) {
 						timer.stopTimer();
@@ -85,7 +95,7 @@ public class TimerView implements TimerDataListener {
 	}
 
 	@Override
-	public void updatedTimerDataAvailable() {
+	public void onNewTimeAvailable(final long elapsedSeconds, final long remainingSeconds) {
 		timerPane.setText(presentationModel.getTimerHtml());
 		timerFrame.repaint();
 	}

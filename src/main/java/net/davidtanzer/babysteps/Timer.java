@@ -1,25 +1,30 @@
 package net.davidtanzer.babysteps;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
 
-final class Timer {
-	private static final long FINAL_WARNING_TIME = 0L;
-	private static final long FIRST_WARNING_TIME = 10L;
-	private static final long RESET_BACKGROUND_TIME = 5L;
+public class Timer {
+	public static final long FINAL_WARNING_TIME = 0L;
+	public static final long FIRST_WARNING_TIME = 10L;
+	public static final long RESET_BACKGROUND_TIME = 5L;
+	
 	private static final int MILLISECONDS_IN_SECOND = 1000;
+	
+	private final TimerPresentationModel presentationModel;
+	private WallClock wallClock = new WallClock();
+	
 	private long currentCycleStartTime;
 	private long lastRemainingSeconds;
-	private final TimerPresentationModel presentationModel;
-	private final TimerDataListener dataListener;
-	private final TimerSoundsPlayer soundsPlayer;
-	private WallClock wallClock = new WallClock();
+	
 	private final long secondsInCycle;
 	private TimerThread timerThread;
+	
+	private final List<TimerEventListener> timerEventListeners = new ArrayList<>();
 
-	public Timer(final long secondsInCycle, final TimerPresentationModel presentationModel, final TimerDataListener dataListener, final TimerSoundsPlayer soundsPlayer) {
+	public Timer(final long secondsInCycle, final TimerPresentationModel presentationModel) {
 		this.presentationModel = presentationModel;
-		this.dataListener = dataListener;
-		this.soundsPlayer = soundsPlayer;
 		this.secondsInCycle = secondsInCycle;
 	}
 	
@@ -50,19 +55,9 @@ final class Timer {
 	}
 
 	private void onNewTimeAvailable(final long elapsedSeconds, final long remainingSeconds) {
-		presentationModel.setRemainingSeconds(remainingSeconds);
-		
-		if(elapsedSeconds == RESET_BACKGROUND_TIME) {
-			presentationModel.setTimerState(TimerState.NORMAL);
+		for(TimerEventListener listener : timerEventListeners) {
+			listener.onNewTimeAvailable(elapsedSeconds, remainingSeconds);
 		}
-		if(remainingSeconds == FIRST_WARNING_TIME) {
-			soundsPlayer.playTenSecondsWarningSound();
-		} else if(remainingSeconds == FINAL_WARNING_TIME) {
-			soundsPlayer.playTimeElapsedInfoSound();
-			presentationModel.setTimerState(TimerState.ALL_TIME_ELAPSED);
-		}
-		
-		dataListener.updatedTimerDataAvailable();
 	}
 
 	private boolean isAllTimeElapsed(final long elapsedTime) {
@@ -92,5 +87,9 @@ final class Timer {
 	
 	void setWallClock(final WallClock wallClock) {
 		this.wallClock = wallClock;
+	}
+	
+	public void addTimerEventListener(final TimerEventListener listener) {
+		timerEventListeners.add(listener);
 	}
 }
