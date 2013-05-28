@@ -1,7 +1,40 @@
-babystepstimer
-==============
+Baby Steps Timer
+================
 
 A timer for the "baby steps" exercise/technique for doing TDD
+
+How it works
+------------
+
+This is a little timer app you can use for the "Taking baby steps" TDD exercise: http://blog.adrianbolboaca.ro/2013/01/the-history-of-taking-baby-steps/
+
+* You can move the timer window around with your mouse.
+* Once you start the timer, the window stays always on top.
+* When the timer counts down to zero, it becomes red because you did not take a baby step. Throw away everything you wrote in the two minutes before.
+* When you finish your red/green/refactoring cycle before the timer counts down to zero, commit your changes and press "Reset" in the timer window.
+
+Refactoring Screen Cast
+-----------------------
+
+I created this project for two reasons:
+1. To have a baby steps timer.
+2. To have some code for a refactoring screen cast.
+
+Because of the second reason, I started with pretty ugly code. I had two prototypes, one for playing the sounds and one for drawing the timer window.
+I put them together in a class and added workaround after workaround, until the timer was working.
+
+Then I started to refactor the code, until it was in a state where I was not embarrassed anymore. It's still not perfect, but it is reasonably nice now.
+I recorded my refactoring sessions, and I will create a three-part screen cast of the refactoring in the coming weeks. You can still find the original code
+under the "OriginalCode" folder in this repository.
+
+I did not use the "Baby Steps" technique during the refactoring, though. I don't think it would have improved the screen cast videos. And I think I
+would not have been able to pull it off - I am just not that good at it. Yet. But if you want to try to refactor the original code using the
+"Baby Steps" technique, feel free to try. And please tell me how it was: david@davidtanzer.net or on Twitter: http://twitter.com/dtanzer
+
+Also, if you have any comments on the final code quality or the app itself, feel free to contact me.
+
+The screen casts are not ready for publishing yet, but I will announce them on Twitter as soon as they are online. If you are interested, just follow me
+and stay tuned: http://twitter.com/dtanzer
 
 Acknowledgements
 ----------------
