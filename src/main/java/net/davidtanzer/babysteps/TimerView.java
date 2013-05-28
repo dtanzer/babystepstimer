@@ -9,9 +9,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
-import net.davidtanzer.babysteps.timerevents.FinalWarningSoundPlayer;
-import net.davidtanzer.babysteps.timerevents.FirstWarningSoundPlayer;
-import net.davidtanzer.babysteps.timerevents.PresentationModelUpdater;
 
 public class TimerView implements TimerEventListener {
 	private static JFrame timerFrame;
@@ -53,8 +50,8 @@ public class TimerView implements TimerEventListener {
 			}
 		});
 		timerPane.addHyperlinkListener(new HyperlinkListener() {
-			private Timer timer;
-
+			private TimerThread timerThread;
+			
 			@Override
 			public void hyperlinkUpdate(final HyperlinkEvent e) {
 				if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -63,16 +60,13 @@ public class TimerView implements TimerEventListener {
 						timerPane.setText(presentationModel.getTimerHtml());
 						timerFrame.repaint();
 						
-						TimerSoundsPlayer soundsPlayer = new TimerSoundsPlayer();
-						timer = new Timer(secondsInCycle, presentationModel);
-						timer.addTimerEventListener(new PresentationModelUpdater(presentationModel));
-						timer.addTimerEventListener(new FirstWarningSoundPlayer(soundsPlayer));
-						timer.addTimerEventListener(new FinalWarningSoundPlayer(soundsPlayer));
-						timer.addTimerEventListener(TimerView.this);
-						
+						Timer timer = TimerFactory.get().createTimer(secondsInCycle, presentationModel, TimerView.this);
 						timer.start();
+
+						timerThread = new TimerThread(timer, presentationModel);
+						timerThread.start();
 					} else if("command://stop".equals(e.getDescription())) {
-						timer.stopTimer();
+						timerThread.stopTimer();
 						timerFrame.setAlwaysOnTop(false);
 						
 						presentationModel.setRemainingSeconds(secondsInCycle);
@@ -82,7 +76,7 @@ public class TimerView implements TimerEventListener {
 						timerPane.setText(presentationModel.getTimerHtml());
 						timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
-						timer.resetTimer();
+						timerThread.resetTimer();
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
 					}
