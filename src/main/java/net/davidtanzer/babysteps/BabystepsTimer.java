@@ -29,6 +29,8 @@ public class BabystepsTimer {
 		presentationModel = new TimerPresentationModel();
 		presentationModel.setRemainingSeconds(SECONDS_IN_CYCLE);
 		
-		timerView = new TimerView(presentationModel, SECONDS_IN_CYCLE);
+		Timer timer = TimerFactory.get().createTimer(SECONDS_IN_CYCLE, presentationModel);
+		timerView = new TimerView(presentationModel, SECONDS_IN_CYCLE, timer);
+		timer.addTimerEventListener(timerView);
 	}
 }

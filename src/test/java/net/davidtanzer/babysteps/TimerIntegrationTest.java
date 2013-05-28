@@ -2,9 +2,7 @@ package net.davidtanzer.babysteps;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
 import net.davidtanzer.babysteps.ui.TimerPresentationModel;
-import net.davidtanzer.babysteps.ui.TimerView;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,17 +18,16 @@ public class TimerIntegrationTest {
 		
 		TimerFactory factory = new DefaultTimerFactory() {
 			@Override
-			public Timer createTimer(final long secondsInCycle, final TimerPresentationModel presentationModel, final TimerView view) {
-				Timer timer = super.createTimer(secondsInCycle, presentationModel, view);
+			public Timer createTimer(final long secondsInCycle, final TimerPresentationModel presentationModel) {
+				Timer timer = super.createTimer(secondsInCycle, presentationModel);
 				timer.setWallClock(wallClock);
 				return timer;
 			}
 		};
 		
 		presentationModel = new TimerPresentationModel();
-		TimerView view = mock(TimerView.class);
 		
-		timer = factory.createTimer(12L, presentationModel, view);
+		timer = factory.createTimer(12L, presentationModel);
 	}
 	
 	@Test
