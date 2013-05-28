@@ -19,7 +19,7 @@ import net.davidtanzer.babysteps.ui.TimerView;
 
 
 public class BabystepsTimer {
-	private static final long SECONDS_IN_CYCLE = 12;
+	private static final long SECONDS_IN_CYCLE = 120;
 
 	public static void main(final String[] args) throws InterruptedException {
 		TimerPresentationModel presentationModel = new TimerPresentationModel();
