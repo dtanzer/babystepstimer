@@ -7,10 +7,12 @@ public class TimerThread extends Thread {
 	private final Timer timer;
 	private boolean timerRunning;
 	private final TimerPresentationModel presentationModel;
+	private final long secondsInCycle;
 
-	public TimerThread(final Timer timer, final TimerPresentationModel presentationModel) {
+	public TimerThread(final Timer timer, final TimerPresentationModel presentationModel, final long secondsInCycle) {
 		this.timer = timer;
 		this.presentationModel = presentationModel;
+		this.secondsInCycle = secondsInCycle;
 	}
 
 	@Override
@@ -25,6 +27,10 @@ public class TimerThread extends Thread {
 	}
 
 	public void stopTimer() {
+		presentationModel.setRemainingSeconds(secondsInCycle);
+		presentationModel.setRunning(false);
+		presentationModel.setTimerState(TimerState.NORMAL);
+		
 		timerRunning = false;
 	}
 

@@ -3,19 +3,15 @@ package net.davidtanzer.babysteps.ui;
 
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 
 import net.davidtanzer.babysteps.Timer;
 import net.davidtanzer.babysteps.TimerEventListener;
-import net.davidtanzer.babysteps.TimerThread;
-import net.davidtanzer.babysteps.ui.TimerPresentationModel.TimerState;
 
 public class TimerView implements TimerEventListener {
 	private final JFrame timerFrame;
 	private final JTextPane timerPane;
 	private final TimerPresentationModel presentationModel;
-	private final Timer timer;
+	final Timer timer;
 	
 	public TimerView(final TimerPresentationModel presentationModel, final long secondsInCycle, final Timer timer) {
 		this.presentationModel = presentationModel;
@@ -32,40 +28,16 @@ public class TimerView implements TimerEventListener {
 		timerPane.setText(presentationModel.getTimerHtml());
 		timerPane.setEditable(false);
 		timerPane.addMouseMotionListener(new MoveTimerWindowMouseMotionListener(this));
-		timerPane.addHyperlinkListener(new HyperlinkListener() {
-			private TimerThread timerThread;
-			
-			@Override
-			public void hyperlinkUpdate(final HyperlinkEvent e) {
-				if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-					if("command://start".equals(e.getDescription())) {
-						timerFrame.setAlwaysOnTop(true);
-						timerPane.setText(presentationModel.getTimerHtml());
-						timerFrame.repaint();
-						
-						timerThread = new TimerThread(TimerView.this.timer, presentationModel);
-						timerThread.start();
-					} else if("command://stop".equals(e.getDescription())) {
-						timerThread.stopTimer();
-						timerFrame.setAlwaysOnTop(false);
-						
-						presentationModel.setRemainingSeconds(secondsInCycle);
-						presentationModel.setRunning(false);
-						presentationModel.setTimerState(TimerState.NORMAL);
-						
-						timerPane.setText(presentationModel.getTimerHtml());
-						timerFrame.repaint();
-					} else  if("command://reset".equals(e.getDescription())) {
-						timerThread.resetTimer();
-					} else  if("command://quit".equals(e.getDescription())) {
-						System.exit(0);
-					}
-				}
-			}
-		});
+		timerPane.addHyperlinkListener(new TimerWindowCommandsHyperlinkListener(this, secondsInCycle, presentationModel));
 		timerFrame.getContentPane().add(timerPane);
 
 		timerFrame.setVisible(true);
+	}
+
+	void updateTimerFrame(final boolean alwaysOnTop) {
+		timerFrame.setAlwaysOnTop(alwaysOnTop);
+		timerPane.setText(presentationModel.getTimerHtml());
+		timerFrame.repaint();
 	}
 
 	@Override
