@@ -6,6 +6,11 @@ import javax.swing.event.HyperlinkListener;
 import net.davidtanzer.babysteps.TimerThread;
 
 final class TimerWindowCommandsHyperlinkListener implements HyperlinkListener {
+	public static final String COMMAND_QUIT = "command://quit";
+	public static final String COMMAND_RESET = "command://reset";
+	public static final String COMMAND_STOP = "command://stop";
+	public static final String COMMAND_START = "command://start";
+	
 	private final long secondsInCycle;
 	private final TimerPresentationModel presentationModel;
 	private TimerThread timerThread;
@@ -20,18 +25,18 @@ final class TimerWindowCommandsHyperlinkListener implements HyperlinkListener {
 	@Override
 	public void hyperlinkUpdate(final HyperlinkEvent e) {
 		if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-			if("command://start".equals(e.getDescription())) {
+			if(COMMAND_START.equals(e.getDescription())) {
 				timerView.updateTimerFrame(true);
 				
 				timerThread = new TimerThread(timerView.timer, presentationModel, secondsInCycle);
 				timerThread.start();
-			} else if("command://stop".equals(e.getDescription())) {
+			} else if(COMMAND_STOP.equals(e.getDescription())) {
 				timerThread.stopTimer();
 				
 				timerView.updateTimerFrame(false);
-			} else  if("command://reset".equals(e.getDescription())) {
+			} else  if(COMMAND_RESET.equals(e.getDescription())) {
 				timerThread.resetTimer();
-			} else  if("command://quit".equals(e.getDescription())) {
+			} else  if(COMMAND_QUIT.equals(e.getDescription())) {
 				System.exit(0);
 			}
 		}

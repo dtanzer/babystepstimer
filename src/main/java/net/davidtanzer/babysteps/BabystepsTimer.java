@@ -19,18 +19,14 @@ import net.davidtanzer.babysteps.ui.TimerView;
 
 
 public class BabystepsTimer {
-
 	private static final long SECONDS_IN_CYCLE = 12;
 
-	static TimerPresentationModel presentationModel;
-	static TimerView timerView;
-
 	public static void main(final String[] args) throws InterruptedException {
-		presentationModel = new TimerPresentationModel();
+		TimerPresentationModel presentationModel = new TimerPresentationModel();
 		presentationModel.setRemainingSeconds(SECONDS_IN_CYCLE);
 		
 		Timer timer = TimerFactory.get().createTimer(SECONDS_IN_CYCLE, presentationModel);
-		timerView = new TimerView(presentationModel, SECONDS_IN_CYCLE, timer);
+		TimerView timerView = new TimerView(presentationModel, SECONDS_IN_CYCLE, timer);
 		timer.addTimerEventListener(timerView);
 	}
 }

@@ -53,12 +53,12 @@ public class TimerPresentationModel {
 				"<h1 style=\"text-align: center; font-size: 30px; color: #333333;\">"+timerText+"</h1>" +
 				"<div style=\"text-align: center\">";
 		if(running) {
-			timerHtml += "<a style=\"color: #555555;\" href=\"command://stop\">Stop</a> " +
-					"<a style=\"color: #555555;\" href=\"command://reset\">Reset</a> ";
+			timerHtml += "<a style=\"color: #555555;\" href=\""+TimerWindowCommandsHyperlinkListener.COMMAND_STOP+"\">Stop</a> " +
+					"<a style=\"color: #555555;\" href=\""+TimerWindowCommandsHyperlinkListener.COMMAND_RESET+"\">Reset</a> ";
 		} else {
-			timerHtml += "<a style=\"color: #555555;\" href=\"command://start\">Start</a> ";
+			timerHtml += "<a style=\"color: #555555;\" href=\""+TimerWindowCommandsHyperlinkListener.COMMAND_START+"\">Start</a> ";
 		}
-		timerHtml += "<a style=\"color: #555555;\" href=\"command://quit\">Quit</a> ";
+		timerHtml += "<a style=\"color: #555555;\" href=\""+TimerWindowCommandsHyperlinkListener.COMMAND_QUIT+"\">Quit</a> ";
 		timerHtml += "</div>" +
 				"</body></html>";
 		return timerHtml;
