@@ -1,8 +1,10 @@
-package net.davidtanzer.babysteps;
+package net.davidtanzer.babysteps.ui;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+
+import net.davidtanzer.babysteps.BabystepsTimer;
 
 public class TimerSoundsPlayer {
 

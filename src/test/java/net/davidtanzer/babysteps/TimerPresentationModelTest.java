@@ -1,7 +1,8 @@
 package net.davidtanzer.babysteps;
 
 import static org.junit.Assert.*;
-import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
+import net.davidtanzer.babysteps.ui.TimerPresentationModel;
+import net.davidtanzer.babysteps.ui.TimerPresentationModel.TimerState;
 
 import org.junit.Test;
 

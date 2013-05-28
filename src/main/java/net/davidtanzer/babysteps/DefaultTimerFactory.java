@@ -3,6 +3,9 @@ package net.davidtanzer.babysteps;
 import net.davidtanzer.babysteps.timerevents.FinalWarningSoundPlayer;
 import net.davidtanzer.babysteps.timerevents.FirstWarningSoundPlayer;
 import net.davidtanzer.babysteps.timerevents.PresentationModelUpdater;
+import net.davidtanzer.babysteps.ui.TimerPresentationModel;
+import net.davidtanzer.babysteps.ui.TimerSoundsPlayer;
+import net.davidtanzer.babysteps.ui.TimerView;
 
 class DefaultTimerFactory extends TimerFactory {
 	@Override

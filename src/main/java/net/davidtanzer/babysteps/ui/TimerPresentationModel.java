@@ -1,4 +1,4 @@
-package net.davidtanzer.babysteps;
+package net.davidtanzer.babysteps.ui;
 
 import java.text.DecimalFormat;
 

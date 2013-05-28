@@ -3,6 +3,9 @@ package net.davidtanzer.babysteps;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import net.davidtanzer.babysteps.ui.TimerPresentationModel;
+import net.davidtanzer.babysteps.ui.TimerView;
+
 import org.junit.Before;
 import org.junit.Test;
 

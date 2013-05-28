@@ -1,6 +1,7 @@
 package net.davidtanzer.babysteps;
 
-import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
+import net.davidtanzer.babysteps.ui.TimerPresentationModel;
+import net.davidtanzer.babysteps.ui.TimerPresentationModel.TimerState;
 
 public class TimerThread extends Thread {
 	private final Timer timer;

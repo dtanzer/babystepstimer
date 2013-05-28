@@ -1,5 +1,8 @@
 package net.davidtanzer.babysteps;
 
+import net.davidtanzer.babysteps.ui.TimerPresentationModel;
+import net.davidtanzer.babysteps.ui.TimerView;
+
 public abstract class TimerFactory {
 	private static TimerFactory defaultTimerFactory = new DefaultTimerFactory();
 

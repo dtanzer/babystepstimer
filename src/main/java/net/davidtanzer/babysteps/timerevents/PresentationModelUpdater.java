@@ -2,8 +2,8 @@ package net.davidtanzer.babysteps.timerevents;
 
 import net.davidtanzer.babysteps.Timer;
 import net.davidtanzer.babysteps.TimerEventListener;
-import net.davidtanzer.babysteps.TimerPresentationModel;
-import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
+import net.davidtanzer.babysteps.ui.TimerPresentationModel;
+import net.davidtanzer.babysteps.ui.TimerPresentationModel.TimerState;
 
 public class PresentationModelUpdater implements TimerEventListener {
 	private final TimerPresentationModel presentationModel;

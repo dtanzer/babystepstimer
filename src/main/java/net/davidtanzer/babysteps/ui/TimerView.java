@@ -1,4 +1,4 @@
-package net.davidtanzer.babysteps;
+package net.davidtanzer.babysteps.ui;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -8,7 +8,11 @@ import javax.swing.JTextPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import net.davidtanzer.babysteps.TimerPresentationModel.TimerState;
+import net.davidtanzer.babysteps.Timer;
+import net.davidtanzer.babysteps.TimerEventListener;
+import net.davidtanzer.babysteps.TimerFactory;
+import net.davidtanzer.babysteps.TimerThread;
+import net.davidtanzer.babysteps.ui.TimerPresentationModel.TimerState;
 
 public class TimerView implements TimerEventListener {
 	private static JFrame timerFrame;
@@ -61,7 +65,6 @@ public class TimerView implements TimerEventListener {
 						timerFrame.repaint();
 						
 						Timer timer = TimerFactory.get().createTimer(secondsInCycle, presentationModel, TimerView.this);
-						timer.start();
 
 						timerThread = new TimerThread(timer, presentationModel);
 						timerThread.start();
