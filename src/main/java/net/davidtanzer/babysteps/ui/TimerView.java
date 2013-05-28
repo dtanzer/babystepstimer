@@ -1,7 +1,5 @@
 package net.davidtanzer.babysteps.ui;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
@@ -14,8 +12,8 @@ import net.davidtanzer.babysteps.TimerThread;
 import net.davidtanzer.babysteps.ui.TimerPresentationModel.TimerState;
 
 public class TimerView implements TimerEventListener {
-	private static JFrame timerFrame;
-	private static JTextPane timerPane;
+	private final JFrame timerFrame;
+	private final JTextPane timerPane;
 	private final TimerPresentationModel presentationModel;
 	private final Timer timer;
 	
@@ -33,27 +31,7 @@ public class TimerView implements TimerEventListener {
 		timerPane.setContentType("text/html");
 		timerPane.setText(presentationModel.getTimerHtml());
 		timerPane.setEditable(false);
-		timerPane.addMouseMotionListener(new MouseMotionListener() {
-			private int lastX;
-			private int lastY;
-
-			@Override
-			public void mouseMoved(final MouseEvent e) {
-				lastX = e.getXOnScreen();
-				lastY = e.getYOnScreen();
-			}
-			
-			@Override
-			public void mouseDragged(final MouseEvent e) {
-				int x = e.getXOnScreen();
-				int y = e.getYOnScreen();
-				
-				timerFrame.setLocation(timerFrame.getLocation().x + (x-lastX), timerFrame.getLocation().y + (y-lastY));
-				
-				lastX = x;
-				lastY = y;
-			}
-		});
+		timerPane.addMouseMotionListener(new MoveTimerWindowMouseMotionListener(this));
 		timerPane.addHyperlinkListener(new HyperlinkListener() {
 			private TimerThread timerThread;
 			
@@ -94,5 +72,9 @@ public class TimerView implements TimerEventListener {
 	public void onNewTimeAvailable(final long elapsedSeconds, final long remainingSeconds) {
 		timerPane.setText(presentationModel.getTimerHtml());
 		timerFrame.repaint();
+	}
+
+	public void setLocationDelta(final int deltaX, final int deltaY) {
+		timerFrame.setLocation(timerFrame.getLocation().x+deltaX, timerFrame.getLocation().y+deltaY);
 	}
 }
