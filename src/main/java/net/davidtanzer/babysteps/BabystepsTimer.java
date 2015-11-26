@@ -33,7 +33,7 @@ public class BabystepsTimer {
 	private static final long SECONDS_IN_CYCLE = 120;
 
 	private static JFrame timerFrame;
-	private static JTextPane timerPane;
+	static JTextPane timerPane;
 	private static boolean timerRunning;
 	private static long currentCycleStartTime;
 	private static String lastRemainingTime;
