@@ -21,23 +21,21 @@ import static org.junit.Assume.assumeThat;
  */
 public class BabystepsTimerTest {
 	private TestingClock testingClock;
+	private BabystepsTimer timer;
 
 	@Before
 	public void setup() {
 		testingClock = new TestingClock();
-		BabystepsTimer.clock = testingClock.clock();
+		timer = new BabystepsTimer(testingClock.clock());
 	}
 
 	@Test
 	public void timerShowsStartTimeAfterIStartedTheProgram() throws Exception {
-		BabystepsTimer.main(null);
-
 		assertThat(getCurrentHtml(), containsString("02:00"));
 	}
 
 	@Test
 	public void timerStartsToCountDownAfterIPressTheStartButton() throws Exception {
-		BabystepsTimer.main(null);
 		assumeThat(getCurrentHtml(), containsString("02:00"));
 
 		press("start");
@@ -48,7 +46,6 @@ public class BabystepsTimerTest {
 
 	@Test
 	public void timerShowsStartTimeAgainAfterIPressTheResetButton() throws Exception {
-		BabystepsTimer.main(null);
 		assumeThat(getCurrentHtml(), containsString("02:00"));
 		press("start");
 		testingClock.advanceTimeBy(Duration.ofMillis(1100L));
@@ -62,7 +59,6 @@ public class BabystepsTimerTest {
 
 	@Test
 	public void timerIsStillRunningAfterIPressTheResetButton() throws Exception {
-		BabystepsTimer.main(null);
 		assumeThat(getCurrentHtml(), containsString("02:00"));
 		press("start");
 		testingClock.advanceTimeBy(Duration.ofMillis(1100L));
@@ -77,7 +73,6 @@ public class BabystepsTimerTest {
 
 	@Test
 	public void timerShowsStartTimeAgainAfterIPressTheStopButton() throws Exception {
-		BabystepsTimer.main(null);
 		assumeThat(getCurrentHtml(), containsString("02:00"));
 		press("start");
 		testingClock.advanceTimeBy(Duration.ofMillis(1100L));
@@ -91,7 +86,6 @@ public class BabystepsTimerTest {
 
 	@Test
 	public void timerIsNotRunningAfterIPressTheStopButton() throws Exception {
-		BabystepsTimer.main(null);
 		assumeThat(getCurrentHtml(), containsString("02:00"));
 		press("start");
 		testingClock.advanceTimeBy(Duration.ofMillis(1100L));
@@ -106,7 +100,6 @@ public class BabystepsTimerTest {
 
 	@Test
 	public void timerShowsGreenBackgroundAfterIPressTheResetButton() throws Exception {
-		BabystepsTimer.main(null);
 		assumeThat(getCurrentHtml(), containsString("02:00"));
 		press("start");
 		testingClock.advanceTimeBy(Duration.ofMillis(119100L));
@@ -119,7 +112,6 @@ public class BabystepsTimerTest {
 
 	@Test
 	public void timerShowsRedBackgroundWhenItIsRunningToZero() throws Exception {
-		BabystepsTimer.main(null);
 		assumeThat(getCurrentHtml(), containsString("02:00"));
 		press("start");
 		testingClock.advanceTimeBy(Duration.ofMillis(119100L));
@@ -131,14 +123,14 @@ public class BabystepsTimerTest {
 	}
 
 	private void press(String command) throws InterruptedException {
-		BabystepsTimer.timerPane.getHyperlinkListeners()[0].hyperlinkUpdate(
-				new HyperlinkEvent(BabystepsTimer.timerPane, HyperlinkEvent.EventType.ACTIVATED, null, "command://"+ command));
+		timer.userInterface.timerPane.getHyperlinkListeners()[0].hyperlinkUpdate(
+				new HyperlinkEvent(timer.userInterface.timerPane, HyperlinkEvent.EventType.ACTIVATED, null, "command://"+ command));
 		Thread.sleep(50L);
 	}
 
 	private String getCurrentHtml() throws IOException, BadLocationException {
 		HTMLEditorKit kit = new HTMLEditorKit();
-		HTMLDocument doc = (HTMLDocument) BabystepsTimer.timerPane.getDocument();
+		HTMLDocument doc = (HTMLDocument) timer.userInterface.timerPane.getDocument();
 		StringWriter writer = new StringWriter();
 		kit.write(writer, doc, 0, doc.getLength());
 		return writer.toString();
