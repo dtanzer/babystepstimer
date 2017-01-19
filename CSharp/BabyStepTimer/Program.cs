@@ -1,93 +1,90 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Media;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using BabyStepTimer.Properties;
 
 namespace BabyStepTimer
 {
     static class Program
     {
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int HTCAPTION = 0x2;
+        private const int WM_NCLBUTTONDOWN = 0xA1;
+        private const int HTCAPTION = 0x2;
         [DllImport("User32.dll")]
-        public static extern bool ReleaseCapture();
+        private static extern bool ReleaseCapture();
         [DllImport("User32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
-        private static readonly String BACKGROUND_COLOR_NEUTRAL = "#ffffff";
-        private static readonly String BACKGROUND_COLOR_FAILED = "#ffcccc";
-        private static readonly String BACKGROUND_COLOR_PASSED = "#ccffcc";
+        private const string BackgroundColorNeutral = "#ffffff";
+        private const string BackgroundColorFailed = "#ffcccc";
+        private const string BackgroundColorPassed = "#ccffcc";
 
-        private static readonly long SECONDS_IN_CYCLE = 12;
+        private const long SecondsInCycle = 12;
 
-        private static System.Windows.Forms.Form timerFrame;
-        private static WebBrowser timerPane;
-        private static bool timerRunning;
-        private static DateTime currentCycleStartTime;
-        private static String lastRemainingTime;
-        private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+        private static Form _mainForm;
+        private static WebBrowser _webBrowser;
+        private static bool _timerRunning;
+        private static DateTime _currentCycleStartTime;
+        private static string _lastRemainingTime;
+        private static string _bodyBackgroundColor = BackgroundColorNeutral;
 
-        private const string twoDigitsFormat = "00";
+        private const string TwoDigitsFormat = "00";
 
         [STAThread]
         static void Main()
         {
-            timerFrame = new Form();
-            timerFrame.Text = "Babysteps Timer";
-            timerFrame.FormBorderStyle = FormBorderStyle.None;
-            timerFrame.Size = new Size(250, 120);
-
-            timerPane = new WebBrowser();
-            timerPane.ScrollBarsEnabled = false;
-            timerPane.DocumentText = createTimerHtml(getRemainingTimeCaption(TimeSpan.FromSeconds(0L)), BACKGROUND_COLOR_NEUTRAL, false);
-
-            timerPane.Document.MouseDown += (sender, e) =>
+            _mainForm = new Form
             {
-                var element = timerPane.Document.GetElementFromPoint(e.ClientMousePosition);
+                Text = "Babysteps Timer",
+                FormBorderStyle = FormBorderStyle.None,
+                Size = new Size(250, 120)
+            };
+
+            _webBrowser = new WebBrowser();
+            _webBrowser.ScrollBarsEnabled = false;
+            _webBrowser.DocumentText = CreateTimerHtml(getRemainingTimeCaption(TimeSpan.FromSeconds(0L)), BackgroundColorNeutral, false);
+
+            _webBrowser.Document.MouseDown += (sender, e) =>
+            {
+                var element = _webBrowser.Document.GetElementFromPoint(e.ClientMousePosition);
                 if (element.TagName == "BODY" && e.MouseButtonsPressed == MouseButtons.Left)
                 {
                     ReleaseCapture();
-                    SendMessage(timerFrame.Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+                    SendMessage(_mainForm.Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
                 }
             };
 
-            timerPane.Navigating += (sender, args) =>
+            _webBrowser.Navigating += (sender, args) =>
             {
                 if (args.Url.AbsoluteUri == "command://start/")
                 {
-                    timerFrame.TopMost = true;
-                    timerPane.Document.OpenNew(false);
-                    timerPane.Document.Write(createTimerHtml(getRemainingTimeCaption(TimeSpan.FromMilliseconds(0)), BACKGROUND_COLOR_NEUTRAL, true));
+                    _mainForm.TopMost = true;
+                    _webBrowser.Document.OpenNew(false);
+                    _webBrowser.Document.Write(CreateTimerHtml(getRemainingTimeCaption(TimeSpan.FromMilliseconds(0)), BackgroundColorNeutral, true));
 
                     ThreadStart start = () =>
                     {
-                        timerRunning = true;
-                        currentCycleStartTime = DateTime.Now;
+                        _timerRunning = true;
+                        _currentCycleStartTime = DateTime.Now;
 
-                        while (timerRunning)
+                        while (_timerRunning)
                         {
-                            TimeSpan elapsedTime = DateTime.Now - currentCycleStartTime;
+                            TimeSpan elapsedTime = DateTime.Now - _currentCycleStartTime;
 
-                            if (elapsedTime.TotalMilliseconds >= SECONDS_IN_CYCLE * 1000 + 980)
+                            if (elapsedTime.TotalMilliseconds >= SecondsInCycle * 1000 + 980)
                             {
-                                currentCycleStartTime = DateTime.Now;
-                                elapsedTime = DateTime.Now - currentCycleStartTime;
+                                _currentCycleStartTime = DateTime.Now;
+                                elapsedTime = DateTime.Now - _currentCycleStartTime;
                             }
-                            if (elapsedTime.TotalMilliseconds >= 5000 && elapsedTime.TotalMilliseconds < 6000 && bodyBackgroundColor != BACKGROUND_COLOR_NEUTRAL)
+                            if (elapsedTime.TotalMilliseconds >= 5000 && elapsedTime.TotalMilliseconds < 6000 && _bodyBackgroundColor != BackgroundColorNeutral)
                             {
-                                bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+                                _bodyBackgroundColor = BackgroundColorNeutral;
                             }
 
                             string remainingTime = getRemainingTimeCaption(elapsedTime);
-                            if (lastRemainingTime!=remainingTime)
+                            if (_lastRemainingTime!=remainingTime)
                             {
                                 if (remainingTime == "00:10")
                                 {
@@ -96,61 +93,60 @@ namespace BabyStepTimer
                                 else if (remainingTime == "00:00")
                                 {
                                     playSound("32304__acclivity__shipsbell.wav");
-                                    bodyBackgroundColor = BACKGROUND_COLOR_FAILED;
+                                    _bodyBackgroundColor = BackgroundColorFailed;
                                 }
 
-                                if (timerPane.InvokeRequired)
+                                if (_webBrowser.InvokeRequired)
                                 {
-                                    timerPane.Invoke(new Action<string>(text =>
+                                    _webBrowser.Invoke(new Action<string>(text =>
                                     {
-                                        timerPane.Document.OpenNew(false);
-                                        timerPane.Document.Write(text);
-                                        timerFrame.Refresh();
-                                    }), createTimerHtml(remainingTime, bodyBackgroundColor, true));
+                                        _webBrowser.Document.OpenNew(false);
+                                        _webBrowser.Document.Write(text);
+                                        _mainForm.Refresh();
+                                    }), CreateTimerHtml(remainingTime, _bodyBackgroundColor, true));
                                 }
-                                lastRemainingTime = remainingTime;
+                                _lastRemainingTime = remainingTime;
                             }
                             Thread.Sleep(10);
                         }
                     };
-                    Thread timerThread = new Thread(start);
-                    timerThread.IsBackground = true;
+                    Thread timerThread = new Thread(start) {IsBackground = true};
                     timerThread.Start();
                 }
                 else if (args.Url.AbsoluteUri == "command://stop/")
                 {
-                    timerRunning = false;
-                    timerFrame.TopMost = false;
-                    timerPane.Document.OpenNew(false);
-                    timerPane.Document.Write(createTimerHtml(getRemainingTimeCaption(TimeSpan.FromSeconds(0)), BACKGROUND_COLOR_NEUTRAL, false));
-                    timerFrame.Refresh();
+                    _timerRunning = false;
+                    _mainForm.TopMost = false;
+                    _webBrowser.Document.OpenNew(false);
+                    _webBrowser.Document.Write(CreateTimerHtml(getRemainingTimeCaption(TimeSpan.FromSeconds(0)), BackgroundColorNeutral, false));
+                    _mainForm.Refresh();
                 }
                 else if (args.Url.AbsoluteUri == "command://reset/")
                 {
-                    currentCycleStartTime = DateTime.Now;
-                    bodyBackgroundColor = BACKGROUND_COLOR_PASSED;
+                    _currentCycleStartTime = DateTime.Now;
+                    _bodyBackgroundColor = BackgroundColorPassed;
                 }
                 else if (args.Url.AbsoluteUri == "command://quit/")
                 {
-                    timerFrame.Close();
+                    _mainForm.Close();
                 }
                 args.Cancel = true;
             };
 
-            timerFrame.Controls.Add(timerPane);
+            _mainForm.Controls.Add(_webBrowser);
 
-            Application.Run(timerFrame);
+            Application.Run(_mainForm);
         }
 
         private static string getRemainingTimeCaption(TimeSpan elapsedTime)
         {
-            TimeSpan remainingTime = TimeSpan.FromSeconds(SECONDS_IN_CYCLE) - elapsedTime;
+            TimeSpan remainingTime = TimeSpan.FromSeconds(SecondsInCycle) - elapsedTime;
 
             long remainingMinutes = (long)remainingTime.TotalSeconds / 60;
-            return remainingMinutes.ToString(twoDigitsFormat) + ":" + (remainingTime.TotalSeconds - remainingMinutes * 60).ToString(twoDigitsFormat);
+            return remainingMinutes.ToString(TwoDigitsFormat) + ":" + (remainingTime.TotalSeconds - remainingMinutes * 60).ToString(TwoDigitsFormat);
         }
 
-        private static string createTimerHtml(string timerText, string bodyColor, bool running)
+        private static string CreateTimerHtml(string timerText, string bodyColor, bool running)
         {
             string timerHtml = "<html><body style=\"border: 3px solid #555555; background: " + bodyColor +
                                "; margin: 0; padding: 0;\">" +
@@ -172,7 +168,7 @@ namespace BabyStepTimer
             return timerHtml;
         }
 
-        public static void playSound(string url)
+        private static void playSound(string url)
         {
             var playThread = new Thread(() =>
             {
