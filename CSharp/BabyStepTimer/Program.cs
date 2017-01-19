@@ -21,7 +21,7 @@ namespace BabyStepTimer
         private const string BackgroundColorFailed = "#ffcccc";
         private const string BackgroundColorPassed = "#ccffcc";
 
-        private const long SecondsInCycle = 12;
+        private const long SecondsInCycle = 120;
 
         private static Form _mainForm;
         private static WebBrowser _webBrowser;
