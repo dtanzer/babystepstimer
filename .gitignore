@@ -4,3 +4,5 @@
 .gradle
 bin
 build
+CSharp/BabyStepTimer/obj
+CSharp/.vs/
