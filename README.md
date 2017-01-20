@@ -37,24 +37,14 @@ Refactoring Screen Cast
 -----------------------
 
 I created this project for two reasons:
-1. To have a baby steps timer.
-2. To have some code for a refactoring screen cast.
+* To have a baby steps timer.
+* To have some code for a refactoring screen cast (that was actually the real reason).
 
 Because of the second reason, I started with pretty ugly code. I had two prototypes, one for playing the sounds and one for drawing the timer window.
-I put them together in a class and added workaround after workaround, until the timer was working.
 
-Then I started to refactor the code, until it was in a state where I was not embarrassed anymore. It's still not perfect, but it is reasonably nice now.
-I recorded my refactoring sessions, and I will create a three-part screen cast of the refactoring in the coming weeks. You can still find the original code
-under the "OriginalCode" folder in this repository.
+I put them together in a class and added workaround after workaround, until the timer was working. I tried to make sure to make the code as hard to test as possible, while I still wanted it to be easy to understand.
 
-I did not use the "Baby Steps" technique during the refactoring, though. I don't think it would have improved the screen cast videos. And I think I
-would not have been able to pull it off - I am just not that good at it. Yet. But if you want to try to refactor the original code using the
-"Baby Steps" technique, feel free to try. And please tell me how it was: david@davidtanzer.net or on Twitter: http://twitter.com/dtanzer
-
-Also, if you have any comments on the final code quality or the app itself, feel free to contact me.
-
-The screen casts are not ready for publishing yet, but I will announce them on Twitter as soon as they are online. If you are interested, just follow me
-and stay tuned: http://twitter.com/dtanzer
+But then I did not finish the screen cast, even though I started recording it. But I am still using this code to practice refactoring myself and to facilitate legacy code sessions at user group meetings and during trainings.
 
 Acknowledgements
 ----------------
