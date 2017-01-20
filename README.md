@@ -22,6 +22,7 @@ Want to contribute a language or a new variant/twist to the existing code? Just 
 * **Low Cohesion** Unrelated things happen close to each other in the code.
 * **Low Level Constructs** The code does not "protect" itself from low level APIs. For example, it makes multiple calls to "System.currentTimeMillis" and uses threading constructs directly. This makes testing harder.
 * **Reasonable Names** Things are mostly reasonably well named. I did not want to write _unreadable_ code: I wanted to create code that is hard to change (because of its structure / interdependencies), even though it is fairly easy to understand.
+* **Complicated UI** This code renders HTML within a Swing application. You usually would not do it exactly like that in a "real" Java application (But I have really seen HTML inside a JPane in a real project to render a small part of the UI). On the other hand, this adds some fun string manipulating code...
 
 How it works
 ------------
