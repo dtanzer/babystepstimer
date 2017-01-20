@@ -43,6 +43,11 @@ This project uses CC-Licensed sounds from freesound.org:
 * Ships Bell by "acclivity" http://www.freesound.org/people/acclivity/sounds/32304/ http://www.freesound.org/people/acclivity/
 * Bowl Struck by "suburban gorilla" http://www.freesound.org/people/suburban%20grilla/sounds/2166/ http://www.freesound.org/people/suburban%20grilla/
 
+Contributors
+------------
+
+The [C# version of the original code](CSharp) was humbly contributed by Paul Rohorzka ([@paulroho](https://github.com/paulroho)).
+
 License
 -------
 
