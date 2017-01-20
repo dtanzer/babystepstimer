@@ -1,7 +1,14 @@
 Baby Steps Timer
 ================
 
-A timer for the "baby steps" exercise/technique for doing TDD
+A timer for the "baby steps" exercise/technique for doing TDD. But **actually**, this is some really bad piece of "legacy" code that you can use for refactoring exercises.
+
+[Legacy Code Refactoring at Softwerkskammer Munich](http://www.davidtanzer.net/legacy_code_refactoring_at_softwerkskammer_munich): This blog post describes some exercises I am doing with groups of people using this code.  
+Do you want me to facilitate this exercise at your conference / user group or meetup / your company? Contact me at Business@DavidTanzer.net
+
+I love to hear your feedback on Twitter or per email. And if you use this code as a Kata, for yourself or during a meetup, please tell me - I love to hear your experiences! Also, if you have any questions, please contact me:  
+Business@DavidTanzer.net  
+[@dtanzer](https://twitter.com/dtanzer)
 
 How it works
 ------------

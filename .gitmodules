@@ -1,0 +1,3 @@
+[submodule "Smoke"]
+	path = Smoke
+	url = https://github.com/SamirTalwar/Smoke.git
