@@ -10,6 +10,19 @@ I love to hear your feedback on Twitter or per email. And if you use this code a
 Business@DavidTanzer.net  
 [@dtanzer](https://twitter.com/dtanzer)
 
+Contributors
+------------
+
+The [C# version of the original code](CSharp) was humbly contributed by Paul Rohorzka ([@paulroho](https://github.com/paulroho)).
+
+Want to contribute a language or a new variant/twist to the existing code? Just open a pull request. Here are some characteristics of the original code that you may (or may not) want to preserve:
+
+* **Single Responsibility Violations** Almost every part of the code violates the single responsibility principle (i.e. does more than one thing).
+* **High Coupling** When you read or refactor the code, you'll see that almost every little bit of it depends on other, seemingly unrelated parts of the code (with different mechanisms).
+* **Low Cohesion** Unrelated things happen close to each other in the code.
+* **Low Level Constructs** The code does not "protect" itself from low level APIs. For example, it makes multiple calls to "System.currentTimeMillis" and uses threading constructs directly. This makes testing harder.
+* **Reasonable Names** Things are mostly reasonably well named. I did not want to write _unreadable_ code: I wanted to create code that is hard to change (because of its structure / interdependencies), even though it is fairly easy to understand.
+
 How it works
 ------------
 
@@ -49,11 +62,6 @@ Acknowledgements
 This project uses CC-Licensed sounds from freesound.org:
 * Ships Bell by "acclivity" http://www.freesound.org/people/acclivity/sounds/32304/ http://www.freesound.org/people/acclivity/
 * Bowl Struck by "suburban gorilla" http://www.freesound.org/people/suburban%20grilla/sounds/2166/ http://www.freesound.org/people/suburban%20grilla/
-
-Contributors
-------------
-
-The [C# version of the original code](CSharp) was humbly contributed by Paul Rohorzka ([@paulroho](https://github.com/paulroho)).
 
 License
 -------
