@@ -13,7 +13,8 @@ Business@DavidTanzer.net
 Contributors
 ------------
 
-The [C# version of the original code](CSharp) was humbly contributed by Paul Rohorzka ([@paulroho](https://github.com/paulroho)).
+The [C# version of the original code](CSharp) was humbly contributed by Paul Rohorzka ([@paulroho](https://github.com/paulroho)).  
+[BabyStepsTimer.js](https://github.com/coderbyheart/babystepstimer.js) - BabySteps Timer refactoring kata in JavaScript by [Markus Tacker](https://github.com/coderbyheart) ([@coderbyheart](https://twitter.com/coderbyheart))
 
 Want to contribute a language or a new variant/twist to the existing code? Just open a pull request. Here are some characteristics of the original code that you may (or may not) want to preserve:
 
