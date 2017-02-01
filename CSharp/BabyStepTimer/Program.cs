@@ -8,10 +8,11 @@ using System.Windows.Forms;
 
 namespace BabyStepTimer
 {
-    static class Program
+    public static class Program
     {
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HTCAPTION = 0x2;
+
         [DllImport("User32.dll")]
         private static extern bool ReleaseCapture();
         [DllImport("User32.dll")]
@@ -33,7 +34,7 @@ namespace BabyStepTimer
         private const string TwoDigitsFormat = "00";
 
         [STAThread]
-        static void Main()
+        public static void Main()
         {
             _mainForm = new Form
             {
@@ -179,5 +180,26 @@ namespace BabyStepTimer
             playThread.IsBackground = true;
             playThread.Start();
         }
+
+        #region Support for UI Testability
+
+        public static string GetCurrentHtml()
+        {
+            var getHtmlFunc = new Func<string>(() => _webBrowser.DocumentText);
+            if (_webBrowser.InvokeRequired)
+                return (string)_webBrowser.Invoke(getHtmlFunc);
+            return getHtmlFunc();
+        }
+
+        public static void Click(string command)
+        {
+            var clickAction = new Action<string>(cmd => _webBrowser.Navigate($"command://{cmd}/"));
+            if (_webBrowser.InvokeRequired)
+                _webBrowser.Invoke(clickAction, command);
+            else
+                clickAction(command);
+        }
+
+        #endregion
     }
 }
