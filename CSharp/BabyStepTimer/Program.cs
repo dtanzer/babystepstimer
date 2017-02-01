@@ -44,7 +44,7 @@ namespace BabyStepTimer
 
             _webBrowser = new WebBrowser();
             _webBrowser.ScrollBarsEnabled = false;
-            _webBrowser.DocumentText = CreateTimerHtml(getRemainingTimeCaption(TimeSpan.FromSeconds(0L)), BackgroundColorNeutral, false);
+            _webBrowser.DocumentText = CreateTimerHtml(GetRemainingTimeCaption(TimeSpan.FromSeconds(0L)), BackgroundColorNeutral, false);
 
             _webBrowser.Document.MouseDown += (sender, e) =>
             {
@@ -62,7 +62,7 @@ namespace BabyStepTimer
                 {
                     _mainForm.TopMost = true;
                     _webBrowser.Document.OpenNew(false);
-                    _webBrowser.Document.Write(CreateTimerHtml(getRemainingTimeCaption(TimeSpan.FromMilliseconds(0)), BackgroundColorNeutral, true));
+                    _webBrowser.Document.Write(CreateTimerHtml(GetRemainingTimeCaption(TimeSpan.FromMilliseconds(0)), BackgroundColorNeutral, true));
 
                     ThreadStart start = () =>
                     {
@@ -83,16 +83,16 @@ namespace BabyStepTimer
                                 _bodyBackgroundColor = BackgroundColorNeutral;
                             }
 
-                            string remainingTime = getRemainingTimeCaption(elapsedTime);
+                            string remainingTime = GetRemainingTimeCaption(elapsedTime);
                             if (_lastRemainingTime!=remainingTime)
                             {
                                 if (remainingTime == "00:10")
                                 {
-                                    playSound("2166__suburban-grilla__bowl-struck.wav");
+                                    PlaySound("2166__suburban-grilla__bowl-struck.wav");
                                 }
                                 else if (remainingTime == "00:00")
                                 {
-                                    playSound("32304__acclivity__shipsbell.wav");
+                                    PlaySound("32304__acclivity__shipsbell.wav");
                                     _bodyBackgroundColor = BackgroundColorFailed;
                                 }
 
@@ -118,7 +118,7 @@ namespace BabyStepTimer
                     _timerRunning = false;
                     _mainForm.TopMost = false;
                     _webBrowser.Document.OpenNew(false);
-                    _webBrowser.Document.Write(CreateTimerHtml(getRemainingTimeCaption(TimeSpan.FromSeconds(0)), BackgroundColorNeutral, false));
+                    _webBrowser.Document.Write(CreateTimerHtml(GetRemainingTimeCaption(TimeSpan.FromSeconds(0)), BackgroundColorNeutral, false));
                     _mainForm.Refresh();
                 }
                 else if (args.Url.AbsoluteUri == "command://reset/")
@@ -138,7 +138,7 @@ namespace BabyStepTimer
             Application.Run(_mainForm);
         }
 
-        private static string getRemainingTimeCaption(TimeSpan elapsedTime)
+        private static string GetRemainingTimeCaption(TimeSpan elapsedTime)
         {
             TimeSpan remainingTime = TimeSpan.FromSeconds(SecondsInCycle) - elapsedTime;
 
@@ -168,7 +168,7 @@ namespace BabyStepTimer
             return timerHtml;
         }
 
-        private static void playSound(string url)
+        private static void PlaySound(string url)
         {
             var playThread = new Thread(() =>
             {
