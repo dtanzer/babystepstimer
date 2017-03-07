@@ -4,8 +4,7 @@
 .gradle
 bin
 build
-CSharp/*/bin
-CSharp/*/obj
+CSharp/BabyStepTimer/obj
 CSharp/.vs/
 .idea
 *.iml
