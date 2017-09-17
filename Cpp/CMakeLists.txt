@@ -9,6 +9,7 @@ set(CMAKE_AUTOMOC ON)
 set(SOURCES
   src/BabystepsTimer.cpp
   src/BabystepsTimer.h
+  src/main.cpp
   )
 
 add_executable(babysteptimer ${SOURCES})
