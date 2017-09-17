@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Multimedia REQUIRED)
 find_package(Threads)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -15,5 +15,9 @@ set(SOURCES
 add_executable(babysteptimer ${SOURCES})
 target_link_libraries(babysteptimer
   PRIVATE Qt5::Widgets
+  PRIVATE Qt5::Multimedia
   PRIVATE ${CMAKE_THREAD_LIBS_INIT}
   )
+
+configure_file(../CSharp/BabyStepTimer/Resources/2166__suburban-grilla__bowl-struck.wav ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(../CSharp/BabyStepTimer/Resources/32304__acclivity__shipsbell.wav ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

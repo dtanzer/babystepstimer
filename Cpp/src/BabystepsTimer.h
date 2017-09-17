@@ -14,6 +14,7 @@ public:
 
 signals:
   void updateGui(QString const & text);
+  void playSound(QString const & filename);
 
 private:
   using Clock = std::chrono::steady_clock;

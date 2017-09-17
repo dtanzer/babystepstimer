@@ -1,5 +1,6 @@
 #include "BabystepsTimer.h"
 
+#include <QtMultimedia/QSound>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QTextBrowser>
 
@@ -30,6 +31,7 @@ int BabystepsTimer::exec(int argc, char * argv[]) {
   timerWidget.setReadOnly(true);
 
   QObject::connect(this, &BabystepsTimer::updateGui, this, [&](QString const & text) { timerWidget.setHtml(text); });
+  QObject::connect(this, &BabystepsTimer::playSound, this, [&](QString const & filename) { QSound::play(filename); });
 
   QObject::connect(&timerWidget, &QTextBrowser::anchorClicked, [&](QUrl url) {
     if(url.url() == "command://start") {
@@ -110,9 +112,9 @@ void BabystepsTimer::timerThread() {
     std::string remainingTime = getRemainingTimeCaption(elapsedTime.count());
     if(remainingTime != lastRemainingTime) {
       if(remainingTime == "00:10") {
-        // playSound("2166__suburban-grilla__bowl-struck.wav");
+        emit playSound("2166__suburban-grilla__bowl-struck.wav");
       } else if(remainingTime == "00:00") {
-        // playSound("32304__acclivity__shipsbell.wav");
+        emit playSound("32304__acclivity__shipsbell.wav");
         bodyBackgroundColor = BACKGROUND_COLOR_FAILED;
       }
       emit updateGui(QString::fromStdString(createTimerHtml(remainingTime, bodyBackgroundColor, true)));
