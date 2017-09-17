@@ -35,13 +35,11 @@ int BabystepsTimer::exec(int argc, char * argv[]) {
 
   QObject::connect(&timerWidget, &QTextBrowser::anchorClicked, [&](QUrl url) {
     if(url.url() == "command://start") {
-      // timerFrame.setAlwaysOnTop(true);
       timerWidget.setHtml(
         QString::fromStdString(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, true)));
       std::thread([this] { timerThread(); }).detach();
     } else if(url.url() == "command://stop") {
       timerRunning = false;
-      // timerFrame.setAlwaysOnTop(false);
       timerWidget.setHtml(
         QString::fromStdString(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false)));
     } else if(url.url() == "command://reset") {
