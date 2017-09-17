@@ -13,10 +13,10 @@ static const std::string BACKGROUND_COLOR_FAILED = "#ffcccc";
 
 static const auto twoDigitsFormat = "%02d";
 
-bool BabystepsTimer::timerRunning;
-BabystepsTimer::TimePoint BabystepsTimer::currentCycleStartTime;
-std::string BabystepsTimer::lastRemainingTime;
-std::string BabystepsTimer::bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+static bool timerRunning;
+static std::chrono::steady_clock::time_point currentCycleStartTime;
+static std::string lastRemainingTime;
+static std::string bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 
 int BabystepsTimer::exec(int argc, char * argv[]) {
   QApplication application{argc, argv};
@@ -26,7 +26,6 @@ int BabystepsTimer::exec(int argc, char * argv[]) {
 
   QTextBrowser timerWidget;
   timerWidget.setParent(&window);
-
   timerWidget.setOpenLinks(false);
   timerWidget.setReadOnly(true);
 

@@ -23,9 +23,4 @@ private:
 
   static std::string getRemainingTimeCaption(int elapsedTime);
   static std::string createTimerHtml(std::string timerText, std::string bodyColor, bool running);
-
-  static bool timerRunning;
-  static TimePoint currentCycleStartTime;
-  static std::string lastRemainingTime;
-  static std::string bodyBackgroundColor;
 };
