@@ -1,5 +1,6 @@
 #include "BabystepsTimer.h"
 
+#include <QtEvents>
 #include <QtMultimedia/QSound>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QTextBrowser>
@@ -19,16 +20,41 @@ static std::chrono::steady_clock::time_point currentCycleStartTime;
 static std::string lastRemainingTime;
 static std::string bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 
+static QPoint dragPosition;
+static std::function<bool(QObject *, QEvent *)> dragWindow;
+
 int BabystepsTimer::exec(int argc, char * argv[]) {
   QApplication application{argc, argv};
   QWidget window;
 
+  window.setWindowFlags(window.windowFlags() | Qt::FramelessWindowHint);
+
+  window.setWindowTitle("Babysteps Timer");
   window.setFixedSize(250, 120);
 
   QTextBrowser timerWidget;
   timerWidget.setParent(&window);
   timerWidget.setOpenLinks(false);
   timerWidget.setReadOnly(true);
+  timerWidget.setTextInteractionFlags(timerWidget.textInteractionFlags() & (~Qt::TextSelectableByMouse));
+
+  dragWindow = [&](QObject * obj, QEvent * event) {
+    if(event->type() == QEvent::MouseButtonPress) {
+      QMouseEvent * mouseEvent = static_cast<QMouseEvent *>(event);
+      if(mouseEvent->buttons() & Qt::LeftButton) {
+        dragPosition = mouseEvent->globalPos() - window.geometry().topLeft();
+      }
+    }
+    if(event->type() == QEvent::MouseMove) {
+      QMouseEvent * mouseEvent = static_cast<QMouseEvent *>(event);
+      if(mouseEvent->buttons() & Qt::LeftButton) {
+        window.move(mouseEvent->globalPos() - dragPosition);
+      }
+    }
+    return QObject::eventFilter(obj, event);
+  };
+
+  application.installEventFilter(this);
 
   QObject::connect(this, &BabystepsTimer::updateGui, this, [&](QString const & text) { timerWidget.setHtml(text); });
   QObject::connect(this, &BabystepsTimer::playSound, this, [&](QString const & filename) { QSound::play(filename); });
@@ -55,6 +81,10 @@ int BabystepsTimer::exec(int argc, char * argv[]) {
 
   window.show();
   return application.exec();
+}
+
+bool BabystepsTimer::eventFilter(QObject * obj, QEvent * event) {
+  dragWindow(obj, event);
 }
 
 std::string BabystepsTimer::getRemainingTimeCaption(long elapsedTime) {

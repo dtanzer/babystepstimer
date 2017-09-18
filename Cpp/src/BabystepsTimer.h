@@ -16,6 +16,9 @@ signals:
   void updateGui(QString const & text);
   void playSound(QString const & filename);
 
+protected:
+  bool eventFilter(QObject * obj, QEvent * event);
+
 private:
   using Clock = std::chrono::steady_clock;
   using TimePoint = Clock::time_point;
