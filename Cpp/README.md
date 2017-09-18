@@ -1,6 +1,15 @@
-# Requirements
+# C++/Qt5 Version
 
-- cmake 3.8
+## Requirements
+
 - Qt5
-- C++14 compliant compiler
+- cmake 3.7 or newer
+- C++11 or newer
+
+## Build Instructions
+
+    mkdir build
+    cd build
+    cmake ..
+    make
 

@@ -22,6 +22,6 @@ private:
 
   void timerThread();
 
-  static std::string getRemainingTimeCaption(int elapsedTime);
+  static std::string getRemainingTimeCaption(long elapsedTime);
   static std::string createTimerHtml(std::string timerText, std::string bodyColor, bool running);
 };

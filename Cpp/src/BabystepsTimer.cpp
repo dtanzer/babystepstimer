@@ -57,7 +57,7 @@ int BabystepsTimer::exec(int argc, char * argv[]) {
   return application.exec();
 }
 
-std::string BabystepsTimer::getRemainingTimeCaption(int elapsedTime) {
+std::string BabystepsTimer::getRemainingTimeCaption(long elapsedTime) {
   long elapsedSeconds = elapsedTime / 1000;
   long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
 
@@ -72,14 +72,12 @@ std::string BabystepsTimer::getRemainingTimeCaption(int elapsedTime) {
 }
 
 std::string BabystepsTimer::createTimerHtml(std::string timerText, std::string bodyColor, bool running) {
-  using namespace std::string_literals;
-
   std::string timerHtml = "<html><body style=\"border: 3px solid #555555; background: " + bodyColor
                           + "; margin: 0; padding: 0;\">"
                           + "<h1 style=\"text-align: center; font-size: 30px; color: #333333;\">" + timerText + "</h1>"
                           + "<div style=\"text-align: center\">";
   if(running) {
-    timerHtml += "<a style=\"color: #555555;\" href=\"command://stop\">Stop</a> "s
+    timerHtml += std::string{"<a style=\"color: #555555;\" href=\"command://stop\">Stop</a> "}
                  + "<a style=\"color: #555555;\" href=\"command://reset\">Reset</a> ";
   } else {
     timerHtml += "<a style=\"color: #555555;\" href=\"command://start\">Start</a> ";
