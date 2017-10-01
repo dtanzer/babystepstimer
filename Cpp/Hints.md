@@ -74,7 +74,6 @@ Reading its state:
 std::string ui_text(BabystepsTimer const & testee) {
   return testee._timerWidget->toPlainText().toStdString();
 }
-}
 ```
 
 ## Test and Qt loop threads
