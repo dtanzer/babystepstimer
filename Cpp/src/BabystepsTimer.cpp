@@ -59,7 +59,7 @@ int BabystepsTimer::exec(int argc, char * argv[]) {
   QObject::connect(this, &BabystepsTimer::updateGui, this, [&](QString const & text) { timerWidget.setHtml(text); });
   QObject::connect(this, &BabystepsTimer::playSound, this, [&](QString const & filename) { QSound::play(filename); });
 
-  QObject::connect(&timerWidget, &QTextBrowser::anchorClicked, [&](QUrl url) {
+  QObject::connect(&timerWidget, &QTextBrowser::anchorClicked, this, [&](QUrl url) {
     if(url.url() == "command://start") {
       timerWidget.setHtml(
         QString::fromStdString(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, true)));

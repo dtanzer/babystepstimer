@@ -9,15 +9,20 @@ set(CMAKE_AUTOMOC ON)
 set(SOURCES
   src/BabystepsTimer.cpp
   src/BabystepsTimer.h
-  src/main.cpp
   )
 
-add_executable(babysteptimer ${SOURCES})
-target_link_libraries(babysteptimer
-  PRIVATE Qt5::Widgets
-  PRIVATE Qt5::Multimedia
+add_library(babystepstimer-lib ${SOURCES})
+target_link_libraries(babystepstimer-lib
+  PUBLIC Qt5::Widgets
+  PUBLIC Qt5::Multimedia
   PRIVATE ${CMAKE_THREAD_LIBS_INIT}
+  )
+
+add_executable(babystepstimer src/main.cpp)
+target_link_libraries(babystepstimer
+  PRIVATE babystepstimer-lib
   )
 
 configure_file(../CSharp/BabyStepTimer/Resources/2166__suburban-grilla__bowl-struck.wav ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(../CSharp/BabyStepTimer/Resources/32304__acclivity__shipsbell.wav ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+
