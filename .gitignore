@@ -8,3 +8,4 @@ CSharp/BabyStepTimer/obj
 CSharp/.vs/
 .idea
 *.iml
+out/
