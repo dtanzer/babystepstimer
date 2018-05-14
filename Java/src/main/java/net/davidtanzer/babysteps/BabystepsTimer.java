@@ -34,6 +34,7 @@ public class BabystepsTimer {
 
 	private static JFrame timerFrame;
 	static JTextPane timerPane;
+	static WallClock wallclock = new SystemWallClock();
 	private static boolean timerRunning;
 	private static long currentCycleStartTime;
 	private static String lastRemainingTime;
@@ -87,7 +88,7 @@ public class BabystepsTimer {
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
 						timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
-						currentCycleStartTime = System.currentTimeMillis();
+						currentCycleStartTime = wallclock.currentTimeMillis();
 						bodyBackgroundColor=BACKGROUND_COLOR_PASSED;
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
@@ -145,14 +146,14 @@ public class BabystepsTimer {
 		@Override
 		public void run() {
 			timerRunning = true;
-			currentCycleStartTime = System.currentTimeMillis();
+			currentCycleStartTime = wallclock.currentTimeMillis();
 			
 			while(timerRunning) {
-				long elapsedTime = System.currentTimeMillis() - currentCycleStartTime;
+				long elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
 				
 				if(elapsedTime >= SECONDS_IN_CYCLE*1000+980) {
-					currentCycleStartTime = System.currentTimeMillis();
-					elapsedTime = System.currentTimeMillis() - currentCycleStartTime;
+					currentCycleStartTime = wallclock.currentTimeMillis();
+					elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
 				}
 				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
 					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
@@ -172,7 +173,7 @@ public class BabystepsTimer {
 					lastRemainingTime = remainingTime;
 				}
 				try {
-					sleep(10);
+					wallclock.nextTick();
 				} catch (InterruptedException e) {
 					//We don't really care about this one...
 				}
