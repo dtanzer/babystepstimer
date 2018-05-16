@@ -76,14 +76,14 @@ public class BabystepsTimer {
 						TimerRenderer.timerFrame.setAlwaysOnTop(true);
 						TimerRenderer.timerPane.setText(TimerRenderer.createTimerHtml(TimerRenderer.getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, true));
 						TimerRenderer.timerFrame.repaint();
-						new TimerThread().start();
+						new TimerThread(timerRenderer).start();
 					} else if("command://stop".equals(e.getDescription())) {
-						TimerThread.timerRunning = false;
+						TimerThread.stopTimer();
 						TimerRenderer.timerFrame.setAlwaysOnTop(false);
 						TimerRenderer.timerPane.setText(TimerRenderer.createTimerHtml(TimerRenderer.getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
 						TimerRenderer.timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
-						TimerThread.currentCycleStartTime = wallclock.currentTimeMillis();
+						TimerThread.resetTimer(wallclock.currentTimeMillis());
 						TimerRenderer.bodyBackgroundColor=BACKGROUND_COLOR_PASSED;
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
@@ -117,6 +117,19 @@ public class BabystepsTimer {
 		private static boolean timerRunning;
 		private static long currentCycleStartTime;
 		private static String lastRemainingTime;
+		private final TimerRenderer timerRenderer;
+
+		public TimerThread(TimerRenderer timerRenderer) {
+			this.timerRenderer = timerRenderer;
+		}
+
+		public static void stopTimer() {
+			timerRunning = false;
+		}
+
+		public static void resetTimer(long newTime) {
+			currentCycleStartTime = newTime;
+		}
 
 		@Override
 		public void run() {
