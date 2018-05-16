@@ -124,28 +124,28 @@ public class BabystepsTimerTest {
 	}
 
 	private void assertBackgroundIs(String backgroundColor) {
-		final String appText = BabystepsTimer.timerPane.getText();
+		final String appText = BabystepsTimer.TimerRenderer.timerPane.getText();
 		assertTrue(
 				"Expected timer background to be \""+backgroundColor+"\" (Full window content: \""+appText+"\")",
 				appText.contains("background-color: "+backgroundColor));
 	}
 
 	private void assumeBackgroundIs(String backgroundColor) {
-		final String appText = BabystepsTimer.timerPane.getText();
+		final String appText = BabystepsTimer.TimerRenderer.timerPane.getText();
 		assumeTrue(
 				"Expected timer background to be \""+backgroundColor+"\" (Full window content: \""+appText+"\")",
 				appText.contains("background-color: "+backgroundColor));
 	}
 
 	private void assertTimerShows(String time) {
-		final String appText = BabystepsTimer.timerPane.getText();
+		final String appText = BabystepsTimer.TimerRenderer.timerPane.getText();
 		assertTrue(
 				"Expected timer to show \""+time+"\" (Full window content: \""+appText+"\")",
 				appText.contains(time));
 	}
 
 	private void assumeTimerShows(String time) {
-		final String appText = BabystepsTimer.timerPane.getText();
+		final String appText = BabystepsTimer.TimerRenderer.timerPane.getText();
 		assumeTrue(
 				"Expected timer to show \""+time+"\" (Full window content: \""+appText+"\")",
 				appText.contains(time));
@@ -163,8 +163,8 @@ public class BabystepsTimerTest {
 	}
 
 	private void press(String button) throws MalformedURLException, InterruptedException {
-		final HyperlinkEvent event = new HyperlinkEvent(BabystepsTimer.timerPane, HyperlinkEvent.EventType.ACTIVATED, null, "command://"+button);
-		BabystepsTimer.timerPane.getHyperlinkListeners()[0].hyperlinkUpdate(event);
+		final HyperlinkEvent event = new HyperlinkEvent(BabystepsTimer.TimerRenderer.timerPane, HyperlinkEvent.EventType.ACTIVATED, null, "command://"+button);
+		BabystepsTimer.TimerRenderer.timerPane.getHyperlinkListeners()[0].hyperlinkUpdate(event);
 		waitFor(0);
 	}
 

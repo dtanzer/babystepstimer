@@ -32,24 +32,22 @@ public class BabystepsTimer {
 
 	private static final long SECONDS_IN_CYCLE = 120;
 
-	private static JFrame timerFrame;
-	static JTextPane timerPane;
 	static WallClock wallclock = new SystemWallClock();
-	private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
-	
+
+	private static TimerRenderer timerRenderer = new TimerRenderer();
 	private static DecimalFormat twoDigitsFormat = new DecimalFormat("00");
 
 	public static void main(final String[] args) throws InterruptedException {
-		timerFrame = new JFrame("Babysteps Timer");
-		timerFrame.setUndecorated(true);
+		TimerRenderer.timerFrame = new JFrame("Babysteps Timer");
+		TimerRenderer.timerFrame.setUndecorated(true);
 
-		timerFrame.setSize(250, 120);
-		timerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		timerPane = new JTextPane();
-		timerPane.setContentType("text/html");
-		timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
-		timerPane.setEditable(false);
-		timerPane.addMouseMotionListener(new MouseMotionListener() {
+		TimerRenderer.timerFrame.setSize(250, 120);
+		TimerRenderer.timerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		TimerRenderer.timerPane = new JTextPane();
+		TimerRenderer.timerPane.setContentType("text/html");
+		TimerRenderer.timerPane.setText(TimerRenderer.createTimerHtml(TimerRenderer.getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
+		TimerRenderer.timerPane.setEditable(false);
+		TimerRenderer.timerPane.addMouseMotionListener(new MouseMotionListener() {
 			private int lastX;
 			private int lastY;
 
@@ -64,62 +62,38 @@ public class BabystepsTimer {
 				int x = e.getXOnScreen();
 				int y = e.getYOnScreen();
 				
-				timerFrame.setLocation(timerFrame.getLocation().x + (x-lastX), timerFrame.getLocation().y + (y-lastY));
+				TimerRenderer.timerFrame.setLocation(TimerRenderer.timerFrame.getLocation().x + (x-lastX), TimerRenderer.timerFrame.getLocation().y + (y-lastY));
 				
 				lastX = x;
 				lastY = y;
 			}
 		});
-		timerPane.addHyperlinkListener(new HyperlinkListener() {
+		TimerRenderer.timerPane.addHyperlinkListener(new HyperlinkListener() {
 			@Override
 			public void hyperlinkUpdate(final HyperlinkEvent e) {
 				if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 					if("command://start".equals(e.getDescription())) {
-						timerFrame.setAlwaysOnTop(true);
-						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, true));
-						timerFrame.repaint();
+						TimerRenderer.timerFrame.setAlwaysOnTop(true);
+						TimerRenderer.timerPane.setText(TimerRenderer.createTimerHtml(TimerRenderer.getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, true));
+						TimerRenderer.timerFrame.repaint();
 						new TimerThread().start();
 					} else if("command://stop".equals(e.getDescription())) {
 						TimerThread.timerRunning = false;
-						timerFrame.setAlwaysOnTop(false);
-						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
-						timerFrame.repaint();
+						TimerRenderer.timerFrame.setAlwaysOnTop(false);
+						TimerRenderer.timerPane.setText(TimerRenderer.createTimerHtml(TimerRenderer.getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
+						TimerRenderer.timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
 						TimerThread.currentCycleStartTime = wallclock.currentTimeMillis();
-						bodyBackgroundColor=BACKGROUND_COLOR_PASSED;
+						TimerRenderer.bodyBackgroundColor=BACKGROUND_COLOR_PASSED;
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
 					}
 				}
 			}
 		});
-		timerFrame.getContentPane().add(timerPane);
+		TimerRenderer.timerFrame.getContentPane().add(TimerRenderer.timerPane);
 
-		timerFrame.setVisible(true);
-	}
-
-	private static String getRemainingTimeCaption(final long elapsedTime) {
-		long elapsedSeconds = elapsedTime/1000;
-		long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
-		
-		long remainingMinutes = remainingSeconds/60;
-		return twoDigitsFormat.format(remainingMinutes)+":"+twoDigitsFormat.format(remainingSeconds-remainingMinutes*60);
-	}
-
-	private static String createTimerHtml(final String timerText, final String bodyColor, final boolean running) {
-		String timerHtml = "<html><body style=\"border: 3px solid #555555; background: "+bodyColor+"; margin: 0; padding: 0;\">" +
-				"<h1 style=\"text-align: center; font-size: 30px; color: #333333;\">"+timerText+"</h1>" +
-				"<div style=\"text-align: center\">";
-		if(running) {
-			timerHtml += "<a style=\"color: #555555;\" href=\"command://stop\">Stop</a> " +
-					"<a style=\"color: #555555;\" href=\"command://reset\">Reset</a> ";
-		} else {
-			timerHtml += "<a style=\"color: #555555;\" href=\"command://start\">Start</a> ";
-		}
-		timerHtml += "<a style=\"color: #555555;\" href=\"command://quit\">Quit</a> ";
-		timerHtml += "</div>" +
-				"</body></html>";
-		return timerHtml;
+		TimerRenderer.timerFrame.setVisible(true);
 	}
 
 	public static synchronized void playSound(final String url) {
@@ -156,11 +130,12 @@ public class BabystepsTimer {
 					currentCycleStartTime = wallclock.currentTimeMillis();
 					elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
 				}
+				String bodyBackgroundColor = timerRenderer.getBodyBackgroundColor();
 				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
 					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 				}
 				
-				String remainingTime = getRemainingTimeCaption(elapsedTime);
+				String remainingTime = timerRenderer.getRemainingTimeCaption(elapsedTime);
 				if(!remainingTime.equals(lastRemainingTime)) {
 					if(remainingTime.equals("00:10")) {
 						playSound("2166__suburban-grilla__bowl-struck.wav");
@@ -169,16 +144,54 @@ public class BabystepsTimer {
 						bodyBackgroundColor=BACKGROUND_COLOR_FAILED;
 					}
 					
-					timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
-					timerFrame.repaint();
 					lastRemainingTime = remainingTime;
 				}
+				timerRenderer.update(remainingTime, bodyBackgroundColor, true);
 				try {
 					wallclock.nextTick();
 				} catch (InterruptedException e) {
 					//We don't really care about this one...
 				}
 			}
+		}
+	}
+
+	public static class TimerRenderer {
+		static JTextPane timerPane;
+		private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+		private static JFrame timerFrame;
+
+		public static String getBodyBackgroundColor() {
+			return bodyBackgroundColor;
+		}
+		public static void update(String remainingTime, String bodyBackgroundColor, boolean timerRunning) {
+			TimerRenderer.bodyBackgroundColor = bodyBackgroundColor;
+			timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
+			timerFrame.repaint();
+		}
+
+		public static String getRemainingTimeCaption(final long elapsedTime) {
+			long elapsedSeconds = elapsedTime/1000;
+			long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
+
+			long remainingMinutes = remainingSeconds/60;
+			return twoDigitsFormat.format(remainingMinutes)+":"+twoDigitsFormat.format(remainingSeconds-remainingMinutes*60);
+		}
+
+		private static String createTimerHtml(final String timerText, final String bodyColor, final boolean running) {
+			String timerHtml = "<html><body style=\"border: 3px solid #555555; background: "+bodyColor+"; margin: 0; padding: 0;\">" +
+					"<h1 style=\"text-align: center; font-size: 30px; color: #333333;\">"+timerText+"</h1>" +
+					"<div style=\"text-align: center\">";
+			if(running) {
+				timerHtml += "<a style=\"color: #555555;\" href=\"command://stop\">Stop</a> " +
+						"<a style=\"color: #555555;\" href=\"command://reset\">Reset</a> ";
+			} else {
+				timerHtml += "<a style=\"color: #555555;\" href=\"command://start\">Start</a> ";
+			}
+			timerHtml += "<a style=\"color: #555555;\" href=\"command://quit\">Quit</a> ";
+			timerHtml += "</div>" +
+					"</body></html>";
+			return timerHtml;
 		}
 	}
 }
