@@ -30,7 +30,7 @@ public class BabystepsTimer {
 	static final String BACKGROUND_COLOR_FAILED = "#ffcccc";
 	static final String BACKGROUND_COLOR_PASSED = "#ccffcc";
 
-	private static final long SECONDS_IN_CYCLE = 120;
+	public static final long SECONDS_IN_CYCLE = 120;
 
 	static WallClock wallclock = new SystemWallClock();
 
@@ -111,62 +111,6 @@ public class BabystepsTimer {
 				}
 			}
 		}).start();
-	}
-
-	private static final class TimerThread extends Thread {
-		private static boolean timerRunning;
-		private static long currentCycleStartTime;
-		private static String lastRemainingTime;
-		private final TimerRenderer timerRenderer;
-
-		public TimerThread(TimerRenderer timerRenderer) {
-			this.timerRenderer = timerRenderer;
-		}
-
-		public static void stopTimer() {
-			timerRunning = false;
-		}
-
-		public static void resetTimer(long newTime) {
-			currentCycleStartTime = newTime;
-		}
-
-		@Override
-		public void run() {
-			timerRunning = true;
-			currentCycleStartTime = wallclock.currentTimeMillis();
-			
-			while(timerRunning) {
-				long elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
-				
-				if(elapsedTime >= SECONDS_IN_CYCLE*1000+980) {
-					currentCycleStartTime = wallclock.currentTimeMillis();
-					elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
-				}
-				String bodyBackgroundColor = timerRenderer.getBodyBackgroundColor();
-				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
-					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
-				}
-				
-				String remainingTime = timerRenderer.getRemainingTimeCaption(elapsedTime);
-				if(!remainingTime.equals(lastRemainingTime)) {
-					if(remainingTime.equals("00:10")) {
-						playSound("2166__suburban-grilla__bowl-struck.wav");
-					} else if(remainingTime.equals("00:00")) {
-						playSound("32304__acclivity__shipsbell.wav");
-						bodyBackgroundColor=BACKGROUND_COLOR_FAILED;
-					}
-					
-					lastRemainingTime = remainingTime;
-				}
-				timerRenderer.update(remainingTime, bodyBackgroundColor, true);
-				try {
-					wallclock.nextTick();
-				} catch (InterruptedException e) {
-					//We don't really care about this one...
-				}
-			}
-		}
 	}
 
 	public static class TimerRenderer {
