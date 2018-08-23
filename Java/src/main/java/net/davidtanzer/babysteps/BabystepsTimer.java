@@ -32,16 +32,23 @@ public class BabystepsTimer {
 
 	private static final long SECONDS_IN_CYCLE = 120;
 
-	private static JFrame timerFrame;
-	private static JTextPane timerPane;
-	private static boolean timerRunning;
-	private static long currentCycleStartTime;
-	private static String lastRemainingTime;
-	private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+	 JFrame timerFrame;
+	 JTextPane timerPane;
+	private  boolean timerRunning;
+	private  long currentCycleStartTime;
+	private  String lastRemainingTime;
+	private  String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 	
-	private static DecimalFormat twoDigitsFormat = new DecimalFormat("00");
+	private  DecimalFormat twoDigitsFormat = new DecimalFormat("00");
+	private Clock clock;
 
-	public static void main(final String[] args) throws InterruptedException {
+	public static void main(final String[] args) {
+		BabystepsTimer babystepsTimer = new BabystepsTimer();
+		babystepsTimer.start(new Clock());
+	}
+
+	public void start(Clock clock) {
+		this.clock = clock;
 		timerFrame = new JFrame("Babysteps Timer");
 		timerFrame.setUndecorated(true);
 
@@ -60,14 +67,14 @@ public class BabystepsTimer {
 				lastX = e.getXOnScreen();
 				lastY = e.getYOnScreen();
 			}
-			
+
 			@Override
 			public void mouseDragged(final MouseEvent e) {
 				int x = e.getXOnScreen();
 				int y = e.getYOnScreen();
-				
+
 				timerFrame.setLocation(timerFrame.getLocation().x + (x-lastX), timerFrame.getLocation().y + (y-lastY));
-				
+
 				lastX = x;
 				lastY = y;
 			}
@@ -87,7 +94,7 @@ public class BabystepsTimer {
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
 						timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
-						currentCycleStartTime = System.currentTimeMillis();
+						currentCycleStartTime = BabystepsTimer.this.clock.getCurrentTimeMillis();
 						bodyBackgroundColor=BACKGROUND_COLOR_PASSED;
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
@@ -100,7 +107,7 @@ public class BabystepsTimer {
 		timerFrame.setVisible(true);
 	}
 
-	private static String getRemainingTimeCaption(final long elapsedTime) {
+	private  String getRemainingTimeCaption(final long elapsedTime) {
 		long elapsedSeconds = elapsedTime/1000;
 		long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
 		
@@ -108,7 +115,7 @@ public class BabystepsTimer {
 		return twoDigitsFormat.format(remainingMinutes)+":"+twoDigitsFormat.format(remainingSeconds-remainingMinutes*60);
 	}
 
-	private static String createTimerHtml(final String timerText, final String bodyColor, final boolean running) {
+	private  String createTimerHtml(final String timerText, final String bodyColor, final boolean running) {
 		String timerHtml = "<html><body style=\"border: 3px solid #555555; background: "+bodyColor+"; margin: 0; padding: 0;\">" +
 				"<h1 style=\"text-align: center; font-size: 30px; color: #333333;\">"+timerText+"</h1>" +
 				"<div style=\"text-align: center\">";
@@ -124,7 +131,7 @@ public class BabystepsTimer {
 		return timerHtml;
 	}
 
-	public static synchronized void playSound(final String url) {
+	public  synchronized void playSound(final String url) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -141,18 +148,18 @@ public class BabystepsTimer {
 		}).start();
 	}
 
-	private static final class TimerThread extends Thread {
+	private  final class TimerThread extends Thread {
 		@Override
 		public void run() {
 			timerRunning = true;
-			currentCycleStartTime = System.currentTimeMillis();
+			currentCycleStartTime = clock.getCurrentTimeMillis();
 			
 			while(timerRunning) {
-				long elapsedTime = System.currentTimeMillis() - currentCycleStartTime;
+				long elapsedTime = clock.getCurrentTimeMillis() - currentCycleStartTime;
 				
 				if(elapsedTime >= SECONDS_IN_CYCLE*1000+980) {
-					currentCycleStartTime = System.currentTimeMillis();
-					elapsedTime = System.currentTimeMillis() - currentCycleStartTime;
+					currentCycleStartTime = clock.getCurrentTimeMillis();
+					elapsedTime = clock.getCurrentTimeMillis() - currentCycleStartTime;
 				}
 				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
 					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
