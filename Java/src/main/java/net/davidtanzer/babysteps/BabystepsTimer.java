@@ -25,16 +25,16 @@ import javax.swing.JTextPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-public class BabystepsTimer {
+public class BabystepsTimer implements BabyStepsTimerUI {
 	private static final String BACKGROUND_COLOR_NEUTRAL = "#ffffff";
 	private static final String BACKGROUND_COLOR_FAILED = "#ffcccc";
 	private static final String BACKGROUND_COLOR_PASSED = "#ccffcc";
 
 	private static final long SECONDS_IN_CYCLE = 120;
 
+	private String lastRemainingTime;
 	JFrame timerFrame;
 	JTextPane timerPane;
-	private String lastRemainingTime;
 	private String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 
 	private DecimalFormat twoDigitsFormat = new DecimalFormat("00");
@@ -46,7 +46,7 @@ public class BabystepsTimer {
 	}
 
 	public void start(Clock clock) {
-		timerThread = new TimerThread(clock);
+		timerThread = new TimerThread(clock, this);
 		timerFrame = new JFrame("Babysteps Timer");
 		timerFrame.setUndecorated(true);
 
@@ -149,11 +149,15 @@ public class BabystepsTimer {
 	private final class TimerThread extends Thread {
 
 		private Clock clock;
+		private BabyStepsTimerUI ui;
 		private boolean timerRunning;
 		private long currentCycleStartTime;
 
-		public TimerThread(Clock clock) {
+
+
+		public TimerThread(Clock clock, BabyStepsTimerUI ui) {
 			this.clock = clock;
+			this.ui = ui;
 		}
 
 		@Override
@@ -168,23 +172,7 @@ public class BabystepsTimer {
 					currentCycleStartTime = this.clock.getCurrentTimeMillis();
 					elapsedTime = this.clock.getCurrentTimeMillis() - currentCycleStartTime;
 				}
-				if (elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
-					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
-				}
-
-				String remainingTime = getRemainingTimeCaption(elapsedTime);
-				if (!remainingTime.equals(lastRemainingTime)) {
-					if (remainingTime.equals("00:10")) {
-						playSound("2166__suburban-grilla__bowl-struck.wav");
-					} else if (remainingTime.equals("00:00")) {
-						playSound("32304__acclivity__shipsbell.wav");
-						bodyBackgroundColor = BACKGROUND_COLOR_FAILED;
-					}
-
-					timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
-					timerFrame.repaint();
-					lastRemainingTime = remainingTime;
-				}
+				ui.update(elapsedTime);
 				try {
 					sleep(10);
 				} catch (InterruptedException e) {
@@ -192,6 +180,7 @@ public class BabystepsTimer {
 				}
 			}
 		}
+
 
 		public void stopTimer() {
 			timerRunning = false;
@@ -201,4 +190,26 @@ public class BabystepsTimer {
 			currentCycleStartTime = clock.getCurrentTimeMillis();
 		}
 	}
+
+	@Override
+	public void update(long elapsedTime) {
+		if (elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
+			bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+		}
+
+		String remainingTime = getRemainingTimeCaption(elapsedTime);
+		if (!remainingTime.equals(lastRemainingTime)) {
+			if (remainingTime.equals("00:10")) {
+				playSound("2166__suburban-grilla__bowl-struck.wav");
+			} else if (remainingTime.equals("00:00")) {
+				playSound("32304__acclivity__shipsbell.wav");
+				bodyBackgroundColor = BACKGROUND_COLOR_FAILED;
+			}
+
+			timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
+			timerFrame.repaint();
+			lastRemainingTime = remainingTime;
+		}
+	}
+
 }
