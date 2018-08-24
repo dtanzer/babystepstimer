@@ -40,7 +40,6 @@ public class BabystepsTimer {
 	private  String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 	
 	private  DecimalFormat twoDigitsFormat = new DecimalFormat("00");
-	private Clock clock;
 
 	public static void main(final String[] args) {
 		BabystepsTimer babystepsTimer = new BabystepsTimer();
@@ -48,7 +47,6 @@ public class BabystepsTimer {
 	}
 
 	public void start(Clock clock) {
-		this.clock = clock;
 		timerFrame = new JFrame("Babysteps Timer");
 		timerFrame.setUndecorated(true);
 
@@ -87,14 +85,14 @@ public class BabystepsTimer {
 						timerFrame.setAlwaysOnTop(true);
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, true));
 						timerFrame.repaint();
-						new TimerThread().start();
+						new TimerThread(clock).start();
 					} else if("command://stop".equals(e.getDescription())) {
 						timerRunning = false;
 						timerFrame.setAlwaysOnTop(false);
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
 						timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
-						currentCycleStartTime = BabystepsTimer.this.clock.getCurrentTimeMillis();
+						currentCycleStartTime = clock.getCurrentTimeMillis();
 						bodyBackgroundColor=BACKGROUND_COLOR_PASSED;
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
@@ -149,17 +147,24 @@ public class BabystepsTimer {
 	}
 
 	private  final class TimerThread extends Thread {
+
+		private Clock clock;
+
+		public TimerThread(Clock clock) {
+			this.clock = clock;
+		}
+
 		@Override
 		public void run() {
 			timerRunning = true;
-			currentCycleStartTime = clock.getCurrentTimeMillis();
+			currentCycleStartTime = this.clock.getCurrentTimeMillis();
 			
 			while(timerRunning) {
 				long elapsedTime = clock.getCurrentTimeMillis() - currentCycleStartTime;
 				
 				if(elapsedTime >= SECONDS_IN_CYCLE*1000+980) {
-					currentCycleStartTime = clock.getCurrentTimeMillis();
-					elapsedTime = clock.getCurrentTimeMillis() - currentCycleStartTime;
+					currentCycleStartTime = this.clock.getCurrentTimeMillis();
+					elapsedTime = this.clock.getCurrentTimeMillis() - currentCycleStartTime;
 				}
 				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
 					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
