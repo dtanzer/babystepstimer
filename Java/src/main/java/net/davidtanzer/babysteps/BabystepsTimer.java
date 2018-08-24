@@ -30,7 +30,7 @@ public class BabystepsTimer implements BabyStepsTimerUI {
 	private static final String BACKGROUND_COLOR_FAILED = "#ffcccc";
 	private static final String BACKGROUND_COLOR_PASSED = "#ccffcc";
 
-	private static final long SECONDS_IN_CYCLE = 120;
+
 
 	private String lastRemainingTime;
 	JFrame timerFrame;
@@ -54,7 +54,7 @@ public class BabystepsTimer implements BabyStepsTimerUI {
 		timerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		timerPane = new JTextPane();
 		timerPane.setContentType("text/html");
-		timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
+		timerPane.setText(createTimerHtml(getRemainingTimeCaption(TimerThread.SECONDS_IN_CYCLE), BACKGROUND_COLOR_NEUTRAL, false));
 		timerPane.setEditable(false);
 		timerPane.addMouseMotionListener(new MouseMotionListener() {
 			private int lastX;
@@ -83,13 +83,13 @@ public class BabystepsTimer implements BabyStepsTimerUI {
 				if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 					if ("command://start".equals(e.getDescription())) {
 						timerFrame.setAlwaysOnTop(true);
-						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, true));
+						timerPane.setText(createTimerHtml(getRemainingTimeCaption(TimerThread.SECONDS_IN_CYCLE), BACKGROUND_COLOR_NEUTRAL, true));
 						timerFrame.repaint();
 						timerThread.start();
 					} else if ("command://stop".equals(e.getDescription())) {
 						timerThread.stopTimer();
 						timerFrame.setAlwaysOnTop(false);
-						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
+						timerPane.setText(createTimerHtml(getRemainingTimeCaption(TimerThread.SECONDS_IN_CYCLE), BACKGROUND_COLOR_NEUTRAL, false));
 						timerFrame.repaint();
 					} else if ("command://reset".equals(e.getDescription())) {
 						timerThread.resetTimer();
@@ -105,10 +105,7 @@ public class BabystepsTimer implements BabyStepsTimerUI {
 		timerFrame.setVisible(true);
 	}
 
-	private String getRemainingTimeCaption(final long elapsedTime) {
-		long elapsedSeconds = elapsedTime / 1000;
-		long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
-
+	private String getRemainingTimeCaption(final long remainingSeconds) {
 		long remainingMinutes = remainingSeconds / 60;
 		return twoDigitsFormat.format(remainingMinutes) + ":" + twoDigitsFormat.format(remainingSeconds - remainingMinutes * 60);
 	}
@@ -147,6 +144,7 @@ public class BabystepsTimer implements BabyStepsTimerUI {
 	}
 
 	private final class TimerThread extends Thread {
+		static final long SECONDS_IN_CYCLE = 120;
 
 		private Clock clock;
 		private BabyStepsTimerUI ui;
@@ -172,7 +170,10 @@ public class BabystepsTimer implements BabyStepsTimerUI {
 					currentCycleStartTime = this.clock.getCurrentTimeMillis();
 					elapsedTime = this.clock.getCurrentTimeMillis() - currentCycleStartTime;
 				}
-				ui.update(elapsedTime);
+				long elapsedSeconds = elapsedTime / 1000;
+				long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
+
+				ui.update(elapsedSeconds, remainingSeconds);
 				try {
 					sleep(10);
 				} catch (InterruptedException e) {
@@ -192,12 +193,12 @@ public class BabystepsTimer implements BabyStepsTimerUI {
 	}
 
 	@Override
-	public void update(long elapsedTime) {
-		if (elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
+	public void update(long elapsedSeconds, long remainingSeconds) {
+		if (elapsedSeconds == 5 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
 			bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 		}
 
-		String remainingTime = getRemainingTimeCaption(elapsedTime);
+		String remainingTime = getRemainingTimeCaption(remainingSeconds);
 		if (!remainingTime.equals(lastRemainingTime)) {
 			if (remainingTime.equals("00:10")) {
 				playSound("2166__suburban-grilla__bowl-struck.wav");
