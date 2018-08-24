@@ -64,6 +64,28 @@ public class BabystepsTimerTest {
 		assertThat(beforeTime).isEqualTo(afterTime);
 	}
 
+	@Test
+	public void onPressingResetTimerDisplaysStartTime()  {
+		pressStart();
+		skipTime(1300L);
+		Assumptions.assumeThat(getTime()).isEqualTo("01:59");
+		pressReset();
+		assertThat(getTime()).isEqualTo("02:00");
+	}
+
+	@Test
+	public void onPressingResetTimerStillCountsDown()  {
+		pressStart();
+		skipTime(1300L);
+		Assumptions.assumeThat(getTime()).isEqualTo("01:59");
+		pressReset();
+		Assumptions.assumeThat(getTime()).isEqualTo("02:00");
+		skipTime(1300L);
+		assertThat(getTime()).isEqualTo("01:59");
+	}
+
+
+
 
 	private String getTime() {
 		String timerHtml = babystepsTimer.timerPane.getText();
@@ -105,6 +127,10 @@ public class BabystepsTimerTest {
 
 	private void pressStop() {
 		press("command://stop");
+	}
+
+	private void pressReset() {
+		press("command://reset");
 	}
 
 	private void press(String command) {
