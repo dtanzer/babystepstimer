@@ -1,5 +1,6 @@
 package net.davidtanzer.babysteps;
 
+import org.assertj.core.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +42,29 @@ public class BabystepsTimerTest {
 		assertThat(getTime()).isEqualTo("01:59");
 	}
 
+
+	@Test
+	public void onPressingStopTimerDisplaysStartTime()  {
+		pressStart();
+		skipTime(1300L);
+		Assumptions.assumeThat(getTime()).isEqualTo("01:59");
+		pressStop();
+		assertThat(getTime()).isEqualTo("02:00");
+	}
+
+	@Test
+	public void onPressingStopTimerStopsCounting()  {
+		pressStart();
+		skipTime(1300L);
+		Assumptions.assumeThat(getTime()).isEqualTo("01:59");
+		pressStop();
+		String beforeTime = getTime();
+		skipTime(1300L);
+		String afterTime = getTime();
+		assertThat(beforeTime).isEqualTo(afterTime);
+	}
+
+
 	private String getTime() {
 		String timerHtml = babystepsTimer.timerPane.getText();
 		Pattern pattern = Pattern.compile("\\d{2}:\\d{2}");
@@ -76,14 +100,21 @@ public class BabystepsTimerTest {
 	}
 
 	private void pressStart() {
+		press("command://start");
+	}
+
+	private void pressStop() {
+		press("command://stop");
+	}
+
+	private void press(String command) {
 		HyperlinkListener listener = babystepsTimer.timerPane.getHyperlinkListeners()[0];
 		HyperlinkEvent hyperlinkEvent = mock(HyperlinkEvent.class);
-		when(hyperlinkEvent.getDescription()).thenReturn("command://start");
+		when(hyperlinkEvent.getDescription()).thenReturn(command);
 		when(hyperlinkEvent.getEventType()).thenReturn(HyperlinkEvent.EventType.ACTIVATED);
 		listener.hyperlinkUpdate(hyperlinkEvent);
 
 		yieldToTimerThread();
-
 	}
 
 	private void yieldToTimerThread() {
