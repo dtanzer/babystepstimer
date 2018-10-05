@@ -142,7 +142,16 @@ public class BabystepsTimer {
 		}).start();
 	}
 
+	private static void showTimerPane(String remainingTime, JFrame timerFrame, String bodyBackgroundColor, JTextPane timerPane) {
+		timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
+		timerFrame.repaint();
+	}
+
 	private static final class TimerThread extends Thread {
+
+		private final Configuration configuration = new Configuration();
+		private final Progress progress = new Progress();
+
 		@Override
 		public void run() {
 			timerRunning = true;
@@ -161,15 +170,14 @@ public class BabystepsTimer {
 				
 				String remainingTime = getRemainingTimeCaption(elapsedTime);
 				if(!remainingTime.equals(lastRemainingTime)) {
-					if(remainingTime.equals("00:10")) {
-						playSound("2166__suburban-grilla__bowl-struck.wav");
-					} else if(remainingTime.equals("00:00")) {
-						playSound("32304__acclivity__shipsbell.wav");
-						bodyBackgroundColor=BACKGROUND_COLOR_FAILED;
+					if(progress.aboutToRunOutOfTime(remainingTime)) {
+						playSound(configuration.aboutToRunOutOfTimeSound());
+					} else if (progress.isTimeUp(remainingTime)) {
+						playSound(configuration.timeIsUpSound());
+						bodyBackgroundColor = BACKGROUND_COLOR_FAILED;
 					}
-					
-					timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
-					timerFrame.repaint();
+
+					showTimerPane(remainingTime, timerFrame, bodyBackgroundColor, timerPane);
 					lastRemainingTime = remainingTime;
 				}
 				try {
@@ -179,5 +187,6 @@ public class BabystepsTimer {
 				}
 			}
 		}
+
 	}
 }
