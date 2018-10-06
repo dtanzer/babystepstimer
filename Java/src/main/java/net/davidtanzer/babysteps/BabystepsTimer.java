@@ -32,13 +32,13 @@ public class BabystepsTimer {
 
 	private static final long SECONDS_IN_CYCLE = 120;
 
-	private static JFrame timerFrame;
+	static JFrame timerFrame;
 	static JTextPane timerPane;
 	static WallClock wallclock = new SystemWallClock();
 	private static boolean timerRunning;
 	private static long currentCycleStartTime;
-	private static String lastRemainingTime;
-	private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+	static String lastRemainingTime;
+	static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 	
 	private static DecimalFormat twoDigitsFormat = new DecimalFormat("00");
 
@@ -101,7 +101,7 @@ public class BabystepsTimer {
 		timerFrame.setVisible(true);
 	}
 
-	private static String getRemainingTimeCaption(final long elapsedTime) {
+	static String getRemainingTimeCaption(final long elapsedTime) {
 		long elapsedSeconds = elapsedTime/1000;
 		long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
 		
@@ -109,7 +109,7 @@ public class BabystepsTimer {
 		return twoDigitsFormat.format(remainingMinutes)+":"+twoDigitsFormat.format(remainingSeconds-remainingMinutes*60);
 	}
 
-	private static String createTimerHtml(final String timerText, final String bodyColor, final boolean running) {
+	static String createTimerHtml(final String timerText, final String bodyColor, final boolean running) {
 		String timerHtml = "<html><body style=\"border: 3px solid #555555; background: "+bodyColor+"; margin: 0; padding: 0;\">" +
 				"<h1 style=\"text-align: center; font-size: 30px; color: #333333;\">"+timerText+"</h1>" +
 				"<div style=\"text-align: center\">";
@@ -149,29 +149,18 @@ public class BabystepsTimer {
 			currentCycleStartTime = wallclock.currentTimeMillis();
 			
 			while(timerRunning) {
+				BackgroundDriver backgroundDriver= new BackgroundDriver();
 				long elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
-				
+
 				if(elapsedTime >= SECONDS_IN_CYCLE*1000+980) {
 					currentCycleStartTime = wallclock.currentTimeMillis();
 					elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
 				}
-				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
-					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(backgroundDriver.getBodyBackgroundColor())) {
+					backgroundDriver.updateBackground(BACKGROUND_COLOR_NEUTRAL);
 				}
-				
-				String remainingTime = getRemainingTimeCaption(elapsedTime);
-				if(!remainingTime.equals(lastRemainingTime)) {
-					if(remainingTime.equals("00:10")) {
-						playSound("2166__suburban-grilla__bowl-struck.wav");
-					} else if(remainingTime.equals("00:00")) {
-						playSound("32304__acclivity__shipsbell.wav");
-						bodyBackgroundColor=BACKGROUND_COLOR_FAILED;
-					}
-					
-					timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
-					timerFrame.repaint();
-					lastRemainingTime = remainingTime;
-				}
+
+				new ProgressLogic(new BackgroundDriver(), new SoundPlayer()).updateProgress(elapsedTime);
 				try {
 					wallclock.nextTick();
 				} catch (InterruptedException e) {
@@ -179,5 +168,7 @@ public class BabystepsTimer {
 				}
 			}
 		}
+
+
 	}
 }
