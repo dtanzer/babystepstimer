@@ -26,11 +26,11 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 public class BabystepsTimer {
-	static final String BACKGROUND_COLOR_NEUTRAL = "#ffffff";
-	static final String BACKGROUND_COLOR_FAILED = "#ffcccc";
-	static final String BACKGROUND_COLOR_PASSED = "#ccffcc";
+	public static final String BACKGROUND_COLOR_NEUTRAL = "#ffffff";
+	public static final String BACKGROUND_COLOR_FAILED = "#ffcccc";
+	public static final String BACKGROUND_COLOR_PASSED = "#ccffcc";
 
-	private static final long SECONDS_IN_CYCLE = 120;
+	public static final long SECONDS_IN_CYCLE = 120;
 
 	private static JFrame timerFrame;
 	static JTextPane timerPane;
