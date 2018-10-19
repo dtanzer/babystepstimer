@@ -88,7 +88,7 @@ public class BabystepsTimer {
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
 						timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
-						currentCycleStartTime = wallclock.currentTimeMillis();
+						TimerThread.resetTimer();
 						bodyBackgroundColor=BACKGROUND_COLOR_PASSED;
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
@@ -147,16 +147,20 @@ public class BabystepsTimer {
 			timerRunning = false;
 		}
 
+		private static void resetTimer() {
+			currentCycleStartTime = wallclock.currentTimeMillis();
+		}
+
 		@Override
 		public void run() {
 			timerRunning = true;
-			currentCycleStartTime = wallclock.currentTimeMillis();
-			
+			resetTimer();
+
 			while(timerRunning) {
 				long elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
 				
 				if(elapsedTime >= SECONDS_IN_CYCLE*1000+980) {
-					currentCycleStartTime = wallclock.currentTimeMillis();
+					resetTimer();
 					elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
 				}
 				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
