@@ -83,7 +83,7 @@ public class BabystepsTimer {
 						timerFrame.repaint();
 						new TimerThread().start();
 					} else if("command://stop".equals(e.getDescription())) {
-						timerRunning = false;
+						TimerThread.stopTimer();
 						timerFrame.setAlwaysOnTop(false);
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
 						timerFrame.repaint();
@@ -143,6 +143,10 @@ public class BabystepsTimer {
 	}
 
 	private static final class TimerThread extends Thread {
+		public static void stopTimer() {
+			timerRunning = false;
+		}
+
 		@Override
 		public void run() {
 			timerRunning = true;
