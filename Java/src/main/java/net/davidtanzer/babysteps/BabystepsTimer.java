@@ -35,14 +35,15 @@ public class BabystepsTimer {
 	private static JFrame timerFrame;
 	static JTextPane timerPane;
 	static WallClock wallclock = new SystemWallClock();
-	private static boolean timerRunning;
-	private static long currentCycleStartTime;
-	private static String lastRemainingTime;
 	private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 	
 	private static DecimalFormat twoDigitsFormat = new DecimalFormat("00");
 
 	public static void main(final String[] args) throws InterruptedException {
+		new BabystepsTimer().startTimer();
+	}
+
+	private void startTimer() {
 		timerFrame = new JFrame("Babysteps Timer");
 		timerFrame.setUndecorated(true);
 
@@ -61,14 +62,14 @@ public class BabystepsTimer {
 				lastX = e.getXOnScreen();
 				lastY = e.getYOnScreen();
 			}
-			
+
 			@Override
 			public void mouseDragged(final MouseEvent e) {
 				int x = e.getXOnScreen();
 				int y = e.getYOnScreen();
-				
+
 				timerFrame.setLocation(timerFrame.getLocation().x + (x-lastX), timerFrame.getLocation().y + (y-lastY));
-				
+
 				lastX = x;
 				lastY = y;
 			}
@@ -143,6 +144,10 @@ public class BabystepsTimer {
 	}
 
 	private static final class TimerThread extends Thread {
+		private static boolean timerRunning;
+		private static long currentCycleStartTime;
+		private static String lastRemainingTime;
+
 		public static void stopTimer() {
 			timerRunning = false;
 		}
