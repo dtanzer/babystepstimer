@@ -144,14 +144,23 @@ public class BabystepsTimer implements TimerUI {
 		}).start();
 	}
 
+	@Override
+	public void resetBackgroundColor() {
+		if (!BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
+			bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+		}
+	}
+
 	private static final class TimerThread extends Thread {
 		private static boolean timerRunning;
 		private static long currentCycleStartTime;
 		public static final long SECONDS_IN_CYCLE = 120;
 		private static String lastRemainingTime;
+		private final TimerUI timerUI;
 
 		public TimerThread(TimerUI timerUI) {
-			
+
+			this.timerUI = timerUI;
 		}
 
 
@@ -170,8 +179,9 @@ public class BabystepsTimer implements TimerUI {
 					currentCycleStartTime = wallclock.currentTimeMillis();
 					elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
 				}
-				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
-					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
+				if(elapsedTime >= 5000 && elapsedTime < 6000) {
+					timerUI.resetBackgroundColor();
+
 				}
 
 				String remainingTime = getRemainingTimeCaption(elapsedTime);
