@@ -36,7 +36,6 @@ public class BabystepsTimer {
 	static JTextPane timerPane;
 	static WallClock wallclock = new SystemWallClock();
 
-	private static long currentCycleStartTime;
 	private static String lastRemainingTime;
 	private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 	
@@ -89,7 +88,7 @@ public class BabystepsTimer {
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
 						timerFrame.repaint();
 					} else  if("command://reset".equals(e.getDescription())) {
-						currentCycleStartTime = wallclock.currentTimeMillis();
+						timerThread.reset();
 						bodyBackgroundColor=BACKGROUND_COLOR_PASSED;
 					} else  if("command://quit".equals(e.getDescription())) {
 						System.exit(0);
@@ -145,6 +144,8 @@ public class BabystepsTimer {
 
 	private static final class TimerThread extends Thread {
 		private static boolean timerRunning;
+		private static long currentCycleStartTime;
+
 
 		public void stopTimer(){
 			timerRunning = false;
@@ -184,6 +185,10 @@ public class BabystepsTimer {
 					//We don't really care about this one...
 				}
 			}
+		}
+
+		public void reset() {
+			currentCycleStartTime = wallclock.currentTimeMillis();
 		}
 	}
 }
