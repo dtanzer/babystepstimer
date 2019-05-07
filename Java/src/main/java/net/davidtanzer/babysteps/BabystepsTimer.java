@@ -35,7 +35,6 @@ public class BabystepsTimer {
 	static JTextPane timerPane;
 	static WallClock wallclock = new SystemWallClock();
 
-	private static String lastRemainingTime;
 	private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 	
 	private static DecimalFormat twoDigitsFormat = new DecimalFormat("00");
@@ -145,6 +144,7 @@ public class BabystepsTimer {
 		private static boolean timerRunning;
 		private static long currentCycleStartTime;
 		public static final long SECONDS_IN_CYCLE = 120;
+		private static String lastRemainingTime;
 
 
 
