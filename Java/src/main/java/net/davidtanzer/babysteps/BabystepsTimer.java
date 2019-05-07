@@ -187,10 +187,9 @@ public class BabystepsTimer implements TimerUI {
 				String remainingTime = getRemainingTimeCaption(elapsedTime);
 				if(!remainingTime.equals(lastRemainingTime)) {
 					if(remainingTime.equals("00:10")) {
-						playSound("2166__suburban-grilla__bowl-struck.wav");
+						timerUI.warning();
 					} else if(remainingTime.equals("00:00")) {
-						playSound("32304__acclivity__shipsbell.wav");
-						bodyBackgroundColor=BACKGROUND_COLOR_FAILED;
+						timerUI.timerFinished();
 					}
 
 					timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
@@ -208,5 +207,16 @@ public class BabystepsTimer implements TimerUI {
 		public void reset() {
 			currentCycleStartTime = wallclock.currentTimeMillis();
 		}
+	}
+
+	@Override
+	public void timerFinished() {
+		playSound("32304__acclivity__shipsbell.wav");
+		bodyBackgroundColor=BACKGROUND_COLOR_FAILED;
+	}
+
+	@Override
+	public void warning() {
+		playSound("2166__suburban-grilla__bowl-struck.wav");
 	}
 }
