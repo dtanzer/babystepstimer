@@ -25,7 +25,7 @@ import javax.swing.JTextPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-public class BabystepsTimer {
+public class BabystepsTimer implements TimerUI {
 	static final String BACKGROUND_COLOR_NEUTRAL = "#ffffff";
 	static final String BACKGROUND_COLOR_FAILED = "#ffcccc";
 	static final String BACKGROUND_COLOR_PASSED = "#ccffcc";
@@ -40,6 +40,10 @@ public class BabystepsTimer {
 	private static DecimalFormat twoDigitsFormat = new DecimalFormat("00");
 
 	public static void main(final String[] args) throws InterruptedException {
+		BabystepsTimer babystepsTimer = new BabystepsTimer();
+	}
+
+	public BabystepsTimer() {
 		timerFrame = new JFrame("Babysteps Timer");
 		timerFrame.setUndecorated(true);
 
@@ -58,20 +62,20 @@ public class BabystepsTimer {
 				lastX = e.getXOnScreen();
 				lastY = e.getYOnScreen();
 			}
-			
+
 			@Override
 			public void mouseDragged(final MouseEvent e) {
 				int x = e.getXOnScreen();
 				int y = e.getYOnScreen();
-				
+
 				timerFrame.setLocation(timerFrame.getLocation().x + (x-lastX), timerFrame.getLocation().y + (y-lastY));
-				
+
 				lastX = x;
 				lastY = y;
 			}
 		});
 		timerPane.addHyperlinkListener(new HyperlinkListener() {
-			TimerThread timerThread = new TimerThread();
+			TimerThread timerThread = new TimerThread(BabystepsTimer.this);
 			@Override
 			public void hyperlinkUpdate(final HyperlinkEvent e) {
 				if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -146,6 +150,9 @@ public class BabystepsTimer {
 		public static final long SECONDS_IN_CYCLE = 120;
 		private static String lastRemainingTime;
 
+		public TimerThread(TimerUI timerUI) {
+			
+		}
 
 
 		public void stopTimer(){
