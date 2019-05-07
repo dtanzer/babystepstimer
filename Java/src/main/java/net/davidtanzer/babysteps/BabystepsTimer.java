@@ -103,7 +103,8 @@ public class BabystepsTimer implements TimerUI {
 		timerFrame.setVisible(true);
 	}
 
-	private static String getRemainingTimeCaption(final long elapsedTime) {
+	@Override
+	public String getRemainingTimeCaption(final long elapsedTime) {
 		long elapsedSeconds = elapsedTime/1000;
 		long remainingSeconds = TimerThread.SECONDS_IN_CYCLE - elapsedSeconds;
 		
@@ -184,7 +185,7 @@ public class BabystepsTimer implements TimerUI {
 
 				}
 
-				String remainingTime = getRemainingTimeCaption(elapsedTime);
+				String remainingTime = timerUI.getRemainingTimeCaption(elapsedTime);
 				if(!remainingTime.equals(lastRemainingTime)) {
 					if(remainingTime.equals("00:10")) {
 						timerUI.warning();
@@ -192,8 +193,7 @@ public class BabystepsTimer implements TimerUI {
 						timerUI.timerFinished();
 					}
 
-					timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
-					timerFrame.repaint();
+					timerUI.showTime(remainingTime);
 					lastRemainingTime = remainingTime;
 				}
 				try {
@@ -218,5 +218,11 @@ public class BabystepsTimer implements TimerUI {
 	@Override
 	public void warning() {
 		playSound("2166__suburban-grilla__bowl-struck.wav");
+	}
+
+	@Override
+	public void showTime(String remainingTime) {
+		timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
+		timerFrame.repaint();
 	}
 }
