@@ -30,7 +30,6 @@ public class BabystepsTimer {
 	static final String BACKGROUND_COLOR_FAILED = "#ffcccc";
 	static final String BACKGROUND_COLOR_PASSED = "#ccffcc";
 
-	private static final long SECONDS_IN_CYCLE = 120;
 
 	private static JFrame timerFrame;
 	static JTextPane timerPane;
@@ -103,7 +102,7 @@ public class BabystepsTimer {
 
 	private static String getRemainingTimeCaption(final long elapsedTime) {
 		long elapsedSeconds = elapsedTime/1000;
-		long remainingSeconds = SECONDS_IN_CYCLE - elapsedSeconds;
+		long remainingSeconds = TimerThread.SECONDS_IN_CYCLE - elapsedSeconds;
 		
 		long remainingMinutes = remainingSeconds/60;
 		return twoDigitsFormat.format(remainingMinutes)+":"+twoDigitsFormat.format(remainingSeconds-remainingMinutes*60);
@@ -145,6 +144,8 @@ public class BabystepsTimer {
 	private static final class TimerThread extends Thread {
 		private static boolean timerRunning;
 		private static long currentCycleStartTime;
+		public static final long SECONDS_IN_CYCLE = 120;
+
 
 
 		public void stopTimer(){
