@@ -35,7 +35,7 @@ public class BabystepsTimer {
 	private static JFrame timerFrame;
 	static JTextPane timerPane;
 	static WallClock wallclock = new SystemWallClock();
-	private static boolean timerRunning;
+
 	private static long currentCycleStartTime;
 	private static String lastRemainingTime;
 	private static String bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
@@ -74,6 +74,7 @@ public class BabystepsTimer {
 			}
 		});
 		timerPane.addHyperlinkListener(new HyperlinkListener() {
+			TimerThread timerThread = new TimerThread();
 			@Override
 			public void hyperlinkUpdate(final HyperlinkEvent e) {
 				if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -81,9 +82,9 @@ public class BabystepsTimer {
 						timerFrame.setAlwaysOnTop(true);
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, true));
 						timerFrame.repaint();
-						new TimerThread().start();
+						timerThread.start();
 					} else if("command://stop".equals(e.getDescription())) {
-						timerRunning = false;
+						timerThread.stopTimer();
 						timerFrame.setAlwaysOnTop(false);
 						timerPane.setText(createTimerHtml(getRemainingTimeCaption(0L), BACKGROUND_COLOR_NEUTRAL, false));
 						timerFrame.repaint();
@@ -143,14 +144,19 @@ public class BabystepsTimer {
 	}
 
 	private static final class TimerThread extends Thread {
+		private static boolean timerRunning;
+
+		public void stopTimer(){
+			timerRunning = false;
+		}
 		@Override
 		public void run() {
 			timerRunning = true;
 			currentCycleStartTime = wallclock.currentTimeMillis();
-			
+
 			while(timerRunning) {
 				long elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
-				
+
 				if(elapsedTime >= SECONDS_IN_CYCLE*1000+980) {
 					currentCycleStartTime = wallclock.currentTimeMillis();
 					elapsedTime = wallclock.currentTimeMillis() - currentCycleStartTime;
@@ -158,7 +164,7 @@ public class BabystepsTimer {
 				if(elapsedTime >= 5000 && elapsedTime < 6000 && !BACKGROUND_COLOR_NEUTRAL.equals(bodyBackgroundColor)) {
 					bodyBackgroundColor = BACKGROUND_COLOR_NEUTRAL;
 				}
-				
+
 				String remainingTime = getRemainingTimeCaption(elapsedTime);
 				if(!remainingTime.equals(lastRemainingTime)) {
 					if(remainingTime.equals("00:10")) {
@@ -167,7 +173,7 @@ public class BabystepsTimer {
 						playSound("32304__acclivity__shipsbell.wav");
 						bodyBackgroundColor=BACKGROUND_COLOR_FAILED;
 					}
-					
+
 					timerPane.setText(createTimerHtml(remainingTime, bodyBackgroundColor, true));
 					timerFrame.repaint();
 					lastRemainingTime = remainingTime;
