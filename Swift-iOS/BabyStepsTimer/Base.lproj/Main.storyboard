@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina3_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="BabyStepsTimer" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uXu-Jy-wMO">
+                                <rect key="frame" x="50" y="192" width="50" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Reset"/>
+                                <connections>
+                                    <action selector="reset" destination="BYZ-38-t0r" eventType="touchUpInside" id="q53-IZ-dxr"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="efM-YQ-W1q">
+                                <rect key="frame" x="91.5" y="80" width="137" height="82"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="70"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nQa-VV-Jwh">
+                                <rect key="frame" x="228" y="192" width="42" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Start"/>
+                                <connections>
+                                    <action selector="startStop" destination="BYZ-38-t0r" eventType="touchUpInside" id="R9Y-Ts-bVJ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="efM-YQ-W1q" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="8JS-0L-Z58"/>
+                            <constraint firstItem="uXu-Jy-wMO" firstAttribute="top" secondItem="efM-YQ-W1q" secondAttribute="bottom" constant="30" id="DJw-KH-2Q7"/>
+                            <constraint firstItem="nQa-VV-Jwh" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="uXu-Jy-wMO" secondAttribute="trailing" constant="8" symbolic="YES" id="EYo-Ih-zHi"/>
+                            <constraint firstItem="uXu-Jy-wMO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="b3n-u3-NUt"/>
+                            <constraint firstItem="efM-YQ-W1q" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="60" id="cKc-Us-Tsc"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="nQa-VV-Jwh" secondAttribute="trailing" constant="50" id="mNO-uw-Cns"/>
+                            <constraint firstItem="uXu-Jy-wMO" firstAttribute="firstBaseline" secondItem="nQa-VV-Jwh" secondAttribute="firstBaseline" id="znu-Xw-VBY"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="resetButton" destination="uXu-Jy-wMO" id="aMU-Ug-yvR"/>
+                        <outlet property="startStopButton" destination="nQa-VV-Jwh" id="6gr-54-Mqc"/>
+                        <outlet property="timerLabel" destination="efM-YQ-W1q" id="LXB-kQ-9Qc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+</document>
