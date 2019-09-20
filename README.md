@@ -16,7 +16,7 @@ Contributors
 The [C# version](CSharp) was contributed by Paul Rohorzka ([@paulroho](https://github.com/paulroho)).  
 The [C++ version](Cpp) was contributed by Ralph Meyer ([@raphaelmeyer](https://github.com/raphaelmeyer)).  
 The [Swift iOS version](Swift-iOS) and the [Objective-C iOS version](ObjC-iOS) were contributed by Jon Reid ([@jonreid](https://github.com/jonreid)).  
-The [TypeScript version](TypeScript) was contributed by Avi Kessner ([@avik-so](https://github.com/avik-so)).
+The [TypeScript version](TypeScript) was contributed by Avi Kessner ([@avik-so](https://github.com/avik-so)).  
 [BabyStepsTimer.js](https://github.com/coderbyheart/babystepstimer.js) - BabySteps Timer refactoring kata in JavaScript by [Markus Tacker](https://github.com/coderbyheart) ([@coderbyheart](https://twitter.com/coderbyheart))
 
 Want to contribute a language or a new variant/twist to the existing code? Just open a pull request. Here are some characteristics of the original code that you may (or may not) want to preserve:
