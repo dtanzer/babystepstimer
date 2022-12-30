@@ -15,7 +15,7 @@
     "@types/mocha": "~2.2.41",
     "@types/node": "~7.0.18",
     "chai": "~3.5.0",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "nyc": "^14.1.1",
     "rimraf": "~2.5.2",
     "source-map-support": "0.5.9",
