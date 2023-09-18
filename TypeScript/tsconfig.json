@@ -1,12 +1,14 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
+        "target": "es6",
+        "esModuleInterop": true,
         "strict": true,
-        "noImplicitAny": false,
-        "sourceMap": false
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "Node"
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/*.spec.ts"
     ]
 }
+
