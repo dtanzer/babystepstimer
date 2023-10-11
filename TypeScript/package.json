@@ -3,24 +3,28 @@
   "version": "1.0.0",
   "description": "BabyStep kata in TypeScript",
   "scripts": {
-    "precompile": "rimraf app/**/*.js test/**/*.js",
+    "precompile": "rimraf src/**/*.js spec/**/*.js",
     "compile": "tsc",
-    "pretest": "rimraf app/**/*.js test/**/*.js",
-    "test": "nyc mocha"
+    "pretest": "rimraf src/*.js spec/*.js",
+    "test": "mocha -r ts-node/register -r jsdom-global/register -r source-map-support/register spec/*.spec.ts",
+    "serve": "npx http-server -a 0.0.0.0 -p 8088 -o babystep.html",
+    "watch": "npx mocha -r ts-node/register -r jsdom-global/register -r source-map-support/register --watch --extension ts"
   },
   "license": "MIT",
-  "private": true,
   "devDependencies": {
-    "@types/chai": "~3.5.2",
-    "@types/mocha": "~2.2.41",
-    "@types/node": "~7.0.18",
-    "chai": "~3.5.0",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
-    "rimraf": "~2.5.2",
-    "source-map-support": "0.5.9",
-    "ts-node": "~3.1.0",
-    "typescript": "~3.0.3"
+    "@types/chai": "^4.3.6",
+    "@types/jsdom-global": "^3.0.4",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.6.0",
+    "chai": "^4.3.8",
+    "http-server": "^14.1.1",
+    "jsdom": "^22.1.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^10.2.0",
+    "rimraf": "^5.0.1",
+    "ts-node": "^10.9.1",
+    "source-map-support": "^0.5.21",
+    "typescript": "^5.2.2"
   },
   "nyc": {
     "extension": [
@@ -38,5 +42,6 @@
       "text"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+  }
 }
