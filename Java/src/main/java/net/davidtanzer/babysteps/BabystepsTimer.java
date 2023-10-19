@@ -129,7 +129,7 @@ public class BabystepsTimer {
 			@Override
 			public void run() {
 				try {
-					Clip clip = AudioSystem.getClip();
+					Clip clip = AudioSystem.getClip(null);
 					AudioInputStream inputStream = AudioSystem.getAudioInputStream(
 							BabystepsTimer.class.getResourceAsStream("/"+url));
 					clip.open(inputStream);
