@@ -1,13 +1,14 @@
 package net.davidtanzer.babysteps;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import javax.swing.event.HyperlinkEvent;
 
 import java.net.MalformedURLException;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class BabystepsTimerTest {
 	private TestingWallClock wallClock;
@@ -126,29 +127,33 @@ public class BabystepsTimerTest {
 	private void assertBackgroundIs(String backgroundColor) {
 		final String appText = BabystepsTimer.timerPane.getText();
 		assertTrue(
-				"Expected timer background to be \""+backgroundColor+"\" (Full window content: \""+appText+"\")",
-				appText.contains("background-color: "+backgroundColor));
+				appText.contains("background-color: "+backgroundColor),
+				"Expected timer background to be \""+backgroundColor+"\" (Full window content: \""+appText+"\")"
+		);
 	}
 
 	private void assumeBackgroundIs(String backgroundColor) {
 		final String appText = BabystepsTimer.timerPane.getText();
 		assumeTrue(
-				"Expected timer background to be \""+backgroundColor+"\" (Full window content: \""+appText+"\")",
-				appText.contains("background-color: "+backgroundColor));
+				appText.contains("background-color: "+backgroundColor),
+				"Expected timer background to be \""+backgroundColor+"\" (Full window content: \""+appText+"\")"
+		);
 	}
 
 	private void assertTimerShows(String time) {
 		final String appText = BabystepsTimer.timerPane.getText();
 		assertTrue(
-				"Expected timer to show \""+time+"\" (Full window content: \""+appText+"\")",
-				appText.contains(time));
+				appText.contains(time),
+				"Expected timer to show \""+time+"\" (Full window content: \""+appText+"\")"
+		);
 	}
 
 	private void assumeTimerShows(String time) {
 		final String appText = BabystepsTimer.timerPane.getText();
 		assumeTrue(
-				"Expected timer to show \""+time+"\" (Full window content: \""+appText+"\")",
-				appText.contains(time));
+				appText.contains(time),
+				"Expected timer to show \""+time+"\" (Full window content: \""+appText+"\")"
+		);
 	}
 
 	private void startTimerApp() throws Exception {
